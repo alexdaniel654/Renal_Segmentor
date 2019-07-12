@@ -14,8 +14,10 @@ from skimage.transform import resize
 from sklearn import preprocessing
 from keras import backend as K
 from keras.models import load_model
+import tensorflow as tf
+tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
-
+# Make argparser
 parser = argparse.ArgumentParser(prog='Renal Segmentor', description='Segment renal MRI images.')
 parser.add_argument('-i', '--input', required=True, dest='in_name',
                     help='The image you wish to segment, this can be a PAR/REC, nii.gz, nii or hdr/img.')
