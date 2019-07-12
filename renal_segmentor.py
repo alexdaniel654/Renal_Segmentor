@@ -28,6 +28,7 @@ parser.add_argument('-r', '--raw', action='store_true', default=False, dest='raw
 parser.add_argument('-o', '--output', default=False, dest='out_name',
                     help='The name you wish to give your output mask. Default: {input name}_mask.nii.gz')
 args = parser.parse_args()
+
 # Define Functions
 
 
@@ -76,6 +77,17 @@ def split_path(full_path):
     return directory, base, extension
 
 
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+
 # Import data
 
 directory, base, extension = split_path(args.in_name)
@@ -88,7 +100,7 @@ data = pre_process_img(data)
 # Predict mask
 
 if 'model' not in locals():
-    model = load_model('.\models\All46_norm_0.93008.model',
+    model = load_model(resource_path('./models/All46_norm_0.93008.model'),
                        custom_objects={'dice_coef_loss': dice_coef_loss, 'dice_coef': dice_coef})
 batch_size = 2 ** 3
 
