@@ -15,19 +15,7 @@ from sklearn import preprocessing
 from keras import backend as K
 from keras.models import load_model
 import tensorflow as tf
-tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
-# Make argparser
-parser = argparse.ArgumentParser(prog='Renal Segmentor', description='Segment renal MRI images.')
-parser.add_argument('-i', '--input', required=True, dest='in_name',
-                    help='The image you wish to segment, this can be a PAR/REC, nii.gz, nii or hdr/img.')
-parser.add_argument('-b', '--binary', action='store_true', default=False, dest='binary',
-                    help='The mask output will only be 0 or 1. Default: False')
-parser.add_argument('-r', '--raw', action='store_true', default=False, dest='raw',
-                    help='Output the raw data used for the segmentation as a nii.gz. Default: False')
-parser.add_argument('-o', '--output', default=False, dest='out_name',
-                    help='The name you wish to give your output mask. Default: {input name}_mask.nii.gz')
-args = parser.parse_args()
 
 # Define Functions
 
@@ -88,32 +76,50 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 
-# Import data
+def main():
+    tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
-directory, base, extension = split_path(args.in_name)
-img = nib.load(args.in_name, scaling='fp')
-data = img.get_data()
-data = pre_process_img(data)
+    # Make argparser
+    parser = argparse.ArgumentParser(prog='Renal Segmentor', description='Segment renal MRI images.')
+    parser.add_argument('-i', '--input', required=True, dest='in_name',
+                        help='The image you wish to segment, this can be a PAR/REC, nii.gz, nii or hdr/img.')
+    parser.add_argument('-b', '--binary', action='store_true', default=False, dest='binary',
+                        help='The mask output will only be 0 or 1. Default: False')
+    parser.add_argument('-r', '--raw', action='store_true', default=False, dest='raw',
+                        help='Output the raw data used for the segmentation as a nii.gz. Default: False')
+    parser.add_argument('-o', '--output', default=False, dest='out_name',
+                        help='The name you wish to give your output mask. Default: {input name}_mask.nii.gz')
+    args = parser.parse_args()
+    # Import data
 
-# Predict mask
+    directory, base, extension = split_path(args.in_name)
+    img = nib.load(args.in_name, scaling='fp')
+    data = img.get_data()
+    data = pre_process_img(data)
 
-model = load_model(resource_path('./models/All46_norm_0.93008.model'),
-                   custom_objects={'dice_coef_loss': dice_coef_loss, 'dice_coef': dice_coef})
-batch_size = 2 ** 3
-prediction = model.predict(data, batch_size=batch_size)
-mask = un_process_mask(prediction, img)
-if args.binary:
-    mask = (mask > 0.5) * 1
+    # Predict mask
 
-# Output mask
+    model = load_model(resource_path('./models/All46_norm_0.93008.model'),
+                       custom_objects={'dice_coef_loss': dice_coef_loss, 'dice_coef': dice_coef})
+    batch_size = 2 ** 3
+    prediction = model.predict(data, batch_size=batch_size)
+    mask = un_process_mask(prediction, img)
+    if args.binary:
+        mask = (mask > 0.5) * 1
 
-if args.out_name==False:
-    output_path = directory + '/' + base + '_mask.nii.gz'
-else:
-    output_path = args.out_name
+    # Output mask
 
-mask_img = nib.Nifti1Image(mask, img.affine)
-nib.save(mask_img, output_path)
+    if not args.out_name:
+        output_path = directory + '/' + base + '_mask.nii.gz'
+    else:
+        output_path = args.out_name
 
-if args.raw:
-    nib.save(img, directory + '/' + base + '.nii.gz')
+    mask_img = nib.Nifti1Image(mask, img.affine)
+    nib.save(mask_img, output_path)
+
+    if args.raw:
+        nib.save(img, directory + '/' + base + '.nii.gz')
+
+
+if __name__ == "__main__":
+    main()
