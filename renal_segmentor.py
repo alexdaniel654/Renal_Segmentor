@@ -91,8 +91,6 @@ def resource_path(relative_path):
 # Import data
 
 directory, base, extension = split_path(args.in_name)
-binary = True
-raw = True
 img = nib.load(args.in_name, scaling='fp')
 data = img.get_data()
 data = pre_process_img(data)
