@@ -97,11 +97,9 @@ data = pre_process_img(data)
 
 # Predict mask
 
-if 'model' not in locals():
-    model = load_model(resource_path('./models/All46_norm_0.93008.model'),
-                       custom_objects={'dice_coef_loss': dice_coef_loss, 'dice_coef': dice_coef})
+model = load_model(resource_path('./models/All46_norm_0.93008.model'),
+                   custom_objects={'dice_coef_loss': dice_coef_loss, 'dice_coef': dice_coef})
 batch_size = 2 ** 3
-
 prediction = model.predict(data, batch_size=batch_size)
 mask = un_process_mask(prediction, img)
 if args.binary:
