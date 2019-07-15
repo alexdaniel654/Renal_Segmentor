@@ -1,5 +1,8 @@
 # -*- mode: python ; coding: utf-8 -*-
-
+import gooey
+gooey_root = os.path.dirname(gooey.__file__)
+gooey_languages = Tree(os.path.join(gooey_root, 'languages'), prefix = 'gooey/languages')
+gooey_images = Tree(os.path.join(gooey_root, 'images'), prefix = 'gooey/images')
 block_cipher = None
 
 
@@ -22,6 +25,8 @@ exe = EXE(pyz,
           a.binaries,
           a.zipfiles,
           a.datas,
+          gooey_languages, # Add them in to collected files
+          gooey_images, # Same here.
           [],
           name='renal_segmentor',
           debug=False,
@@ -30,4 +35,6 @@ exe = EXE(pyz,
           upx=True,
           upx_exclude=[],
           runtime_tmpdir=None,
-          console=True )
+          console=False,
+          windowed=True,
+          icon=os.path.join(gooey_root, 'images', 'program_icon.ico'))
