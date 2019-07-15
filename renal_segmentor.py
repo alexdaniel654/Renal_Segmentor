@@ -15,6 +15,7 @@ from sklearn import preprocessing
 from keras import backend as K
 from keras.models import load_model
 import tensorflow as tf
+from gooey import Gooey, GooeyParser
 
 
 # Define Functions
@@ -76,13 +77,15 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 
+@Gooey(program_name='Renal Segmentor')
 def main():
     tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
     # Make argparser
-    parser = argparse.ArgumentParser(prog='Renal Segmentor', description='Segment renal MRI images.')
+    parser = GooeyParser(prog='Renal Segmentor', description='Segment renal MRI images.')
     parser.add_argument('-i', '--input', required=True, dest='in_name',
-                        help='The image you wish to segment, this can be a PAR/REC, nii.gz, nii or hdr/img.')
+                        help='The image you wish to segment',
+                        widget='FileChooser')
     parser.add_argument('-b', '--binary', action='store_true', default=False, dest='binary',
                         help='The mask output will only be 0 or 1. Default: False')
     parser.add_argument('-r', '--raw', action='store_true', default=False, dest='raw',
