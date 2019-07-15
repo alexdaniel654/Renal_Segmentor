@@ -83,20 +83,20 @@ def main():
 
     # Make argparser
     parser = GooeyParser(prog='Renal Segmentor', description='Segment renal MRI images.')
-    parser.add_argument('-i', '--input', required=True, dest='in_name',
+    parser.add_argument('input',
                         help='The image you wish to segment',
                         widget='FileChooser')
     parser.add_argument('-b', '--binary', action='store_true', default=False, dest='binary',
-                        help='The mask output will only be 0 or 1. Default: False')
+                        help='The mask output will only be 0 or 1.')
     parser.add_argument('-r', '--raw', action='store_true', default=False, dest='raw',
-                        help='Output the raw data used for the segmentation as a nii.gz. Default: False')
-    parser.add_argument('-o', '--output', default=False, dest='out_name',
-                        help='The name you wish to give your output mask. Default: {input name}_mask.nii.gz')
+                        help='Output the raw data used for the segmentation.')
+    parser.add_argument('-output', default=False,
+                        help='The name you wish to give your output mask.')
     args = parser.parse_args()
     # Import data
 
-    directory, base, extension = split_path(args.in_name)
-    img = nib.load(args.in_name, scaling='fp')
+    directory, base, extension = split_path(args.input)
+    img = nib.load(args.input, scaling='fp')
     data = img.get_data()
     data = pre_process_img(data)
 
@@ -112,10 +112,10 @@ def main():
 
     # Output mask
 
-    if not args.out_name:
+    if not args.output:
         output_path = directory + '/' + base + '_mask.nii.gz'
     else:
-        output_path = args.out_name
+        output_path = args.output
 
     mask_img = nib.Nifti1Image(mask, img.affine)
     nib.save(mask_img, output_path)
