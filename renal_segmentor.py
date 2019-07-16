@@ -7,7 +7,6 @@ Created on Fri Jul 12 11:25:34 2019
 
 # Import Packages
 import os
-import argparse
 import nibabel as nib
 import numpy as np
 from skimage.transform import resize
@@ -77,7 +76,8 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 
-@Gooey(program_name='Renal Segmentor')
+@Gooey(program_name='Renal Segmentor',
+       image_dir='./icons')
 def main():
     tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
