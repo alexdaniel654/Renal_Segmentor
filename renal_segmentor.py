@@ -77,7 +77,7 @@ def resource_path(relative_path):
 
 
 @Gooey(program_name='Renal Segmentor',
-       image_dir='./icons')
+       image_dir=resource_path('./icons'))
 def main():
     tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 

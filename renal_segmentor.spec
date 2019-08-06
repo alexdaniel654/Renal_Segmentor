@@ -3,6 +3,7 @@ import gooey
 gooey_root = os.path.dirname(gooey.__file__)
 gooey_languages = Tree(os.path.join(gooey_root, 'languages'), prefix = 'gooey/languages')
 gooey_images = Tree(os.path.join(gooey_root, 'images'), prefix = 'gooey/images')
+custom_images = Tree('D:\\ppxad2\\ownCloud\\University\\Renal Imaging\\Nephrectomy\\Deep-Renal\\Standalone_Segmentor\\icons', prefix='icons')
 block_cipher = None
 
 
@@ -27,6 +28,7 @@ exe = EXE(pyz,
           a.datas,
           gooey_languages, # Add them in to collected files
           gooey_images, # Same here.
+          custom_images,
           [],
           name='renal_segmentor',
           debug=False,
@@ -37,4 +39,4 @@ exe = EXE(pyz,
           runtime_tmpdir=None,
           console=False,
           windowed=True,
-          icon=os.path.join(gooey_root, 'images', 'program_icon.ico'))
+          icon=os.path.join('icons','program_icon.ico'))
