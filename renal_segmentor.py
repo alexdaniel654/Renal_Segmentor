@@ -93,25 +93,31 @@ def main():
     parser.add_argument('-output', default=False,
                         help='The name you wish to give your output mask.')
     args = parser.parse_args()
-    # Import data
 
+    # Import data
+    print('Loading data')
     directory, base, extension = split_path(args.input)
     img = nib.load(args.input, scaling='fp')
     data = img.get_data()
+
+    print('Pre-processing')
     data = pre_process_img(data)
 
     # Predict mask
-
+    print('Loading model')
     model = load_model(resource_path('./models/All46_norm_0.93008.model'),
                        custom_objects={'dice_coef_loss': dice_coef_loss, 'dice_coef': dice_coef})
+
+    print('Making prediction')
     batch_size = 2 ** 3
     prediction = model.predict(data, batch_size=batch_size)
+
+    print('Outputting data')
     mask = un_process_mask(prediction, img)
     if args.binary:
         mask = (mask > 0.5) * 1
 
     # Output mask
-
     if not args.output:
         output_path = directory + '/' + base + '_mask.nii.gz'
     else:
