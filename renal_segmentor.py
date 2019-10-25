@@ -104,7 +104,10 @@ def main():
     # Import data
     print('Loading data')
     directory, base, extension = split_path(args.input)
-    img = nib.load(args.input, scaling='fp')
+    if extension == 'PAR':
+        img = nib.load(args.input, scaling='fp')
+    else:
+        img = nib.load(args.input)
     data = img.get_data()
 
     print('Pre-processing')
