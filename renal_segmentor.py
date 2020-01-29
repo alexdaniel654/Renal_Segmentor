@@ -117,7 +117,7 @@ def main():
 
     # Predict mask
     print('Loading model')
-    model = load_model(resource_path('./models/very_extreme_augmentation_300_epochs_max_dice_0.9262.model'),
+    model = load_model(resource_path('./models/very_extreme_augmentation_max_dice_0.9177.model'),
                        custom_objects={'dice_coef_loss': dice_coef_loss, 'dice_coef': dice_coef})
 
     print('Making prediction')
