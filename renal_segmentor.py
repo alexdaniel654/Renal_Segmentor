@@ -33,7 +33,8 @@ def dice_coef_loss(y_true, y_pred):
 
 
 def pre_process_img(raw_data):
-    data = np.swapaxes(raw_data, 0, 2)
+    data = np.flip(raw_data, 1)
+    data = np.swapaxes(data, 0, 2)
     data = np.swapaxes(data, 1, 2)
     for n in range(data.shape[0]):
         data[n, :, :] = rescale(data[n, :, :])
@@ -47,6 +48,7 @@ def un_process_mask(mask, base_img):
     mask = np.swapaxes(mask, 0, 2)
     mask = np.swapaxes(mask, 0, 1)
     mask = resize(mask, (base_img.shape[0], base_img.shape[1], base_img.shape[2]))
+    mask = np.flip(mask, 1)
     return mask
 
 
