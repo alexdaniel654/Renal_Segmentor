@@ -52,36 +52,17 @@ def same_image(test, gold_image_stats):
 def test_rescale(subject, expected):
     rsdata = rs.rescale(subject)
     assert same_image(rsdata, expected)
+
 # Split Path
 
-
-def test_file_simple_extension():
-    path = 'foo.PAR'
+@pytest.mark.parametrize('path, expected', [
+    ('foo.PAR', ['', 'foo', '.PAR']),
+    ('foo.nii.gz', ['', 'foo', '.nii.gz']),
+    ('./foo/bar.PAR', ['./foo', 'bar', '.PAR']),
+    ('./foo/bar.nii.gz', ['./foo', 'bar', '.nii.gz'])
+])
+def test_split_path(path, expected):
     directory, base, extension = rs.split_path(path)
-    assert directory == ''
-    assert base == 'foo'
-    assert extension == '.PAR'
-
-
-def test_file_nifti_extension():
-    path = 'foo.nii.gz'
-    directory, base, extension = rs.split_path(path)
-    assert directory == ''
-    assert base == 'foo'
-    assert extension == '.nii.gz'
-
-
-def test_path_simple_extension():
-    path = './foo/bar.PAR'
-    directory, base, extension = rs.split_path(path)
-    assert directory == './foo'
-    assert base == 'bar'
-    assert extension == '.PAR'
-
-
-def test_path_nifti_extension():
-    path = './foo/bar.nii.gz'
-    directory, base, extension = rs.split_path(path)
-    assert directory == './foo'
-    assert base == 'bar'
-    assert extension == '.nii.gz'
+    assert directory == expected[0]
+    assert base == expected[1]
+    assert extension == expected[2]
