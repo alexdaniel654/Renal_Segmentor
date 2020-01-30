@@ -15,6 +15,20 @@ from keras.models import load_model
 import tensorflow as tf
 from gooey import Gooey, GooeyParser
 
+# Define Classes
+
+
+class RawData:
+    def __init__(self, path):
+        self.directory, self.base, self.extension = split_path(path)
+
+        if self.extension == 'PAR':
+            self.img = nib.load(path, scaling='fp')
+        else:
+            self.img = nib.load(path)
+
+        self.data = self.img.get_fdata()
+        self.affine = self.img.affine
 
 # Define Functions
 
@@ -85,7 +99,8 @@ def predict_mask(data):
     batch_size = 2 ** 3
     prediction = model.predict(data, batch_size=batch_size)
     return prediction
-    
+
+
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
     try:
@@ -117,35 +132,31 @@ def main():
 
     # Import data
     print('Loading data')
-    directory, base, extension = split_path(args.input)
-    if extension == 'PAR':
-        img = nib.load(args.input, scaling='fp')
-    else:
-        img = nib.load(args.input)
-    data = img.get_data()
+    raw_data = RawData(args.input)
 
     print('Pre-processing')
-    data = pre_process_img(data)
+    data = pre_process_img(raw_data.data)
 
     # Predict mask
     prediction = predict_mask(data)
 
     print('Outputting data')
-    mask = un_pre_process(prediction, img)
+    mask = un_pre_process(prediction, raw_data.img)
     if args.binary:
         mask = (mask > 0.5) * 1
 
     # Output mask
     if not args.output:
-        output_path = directory + '/' + base + '_mask.nii.gz'
+        output_path = raw_data.directory + '/' + raw_data.base + '_mask.nii.gz'
     else:
         output_path = args.output
 
-    mask_img = nib.Nifti1Image(mask, img.affine)
+    mask_img = nib.Nifti1Image(mask, raw_data.affine)
     nib.save(mask_img, output_path)
 
+# TODO Make this so it exports with output data rather than input data
     if args.raw:
-        nib.save(img, directory + '/' + base + '.nii.gz')
+        nib.save(raw_data.img, raw_data.directory + '/' + raw_data.base + '.nii.gz')
 
 
 if __name__ == "__main__":
