@@ -68,3 +68,14 @@ def test_split_path(path, expected):
     assert directory == expected[0]
     assert base == expected[1]
     assert extension == expected[2]
+
+
+# Pre_process
+
+@pytest.mark.parametrize('subject, expected', [
+    (SUB_01_DATA, [0.14816738145449654, 0.18183894498589623, 1.0, 0.0, 1, 0.0]),
+    (SUB_02_DATA, [0.15022795636734432, 0.17748050040287047, 1.0, 0.0, 1, 0.0])
+])
+def test_pre_process(subject, expected):
+    pre_processed = rs.pre_process_img(subject)
+    assert same_image(pre_processed, expected)
