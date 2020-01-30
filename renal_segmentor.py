@@ -43,7 +43,7 @@ def pre_process_img(raw_data):
     return data
 
 
-def un_process_mask(mask, base_img):
+def un_pre_process(mask, base_img):
     mask = np.squeeze(mask)
     mask = np.swapaxes(mask, 0, 2)
     mask = np.swapaxes(mask, 0, 1)
@@ -125,7 +125,7 @@ def main():
     prediction = model.predict(data, batch_size=batch_size)
 
     print('Outputting data')
-    mask = un_process_mask(prediction, img)
+    mask = un_pre_process(prediction, img)
     if args.binary:
         mask = (mask > 0.5) * 1
 
