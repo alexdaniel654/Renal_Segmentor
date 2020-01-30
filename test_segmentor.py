@@ -33,11 +33,13 @@ def image_stats(data):
     std = np.nanstd(data)
     max = np.nanmax(data)
     min = np.nanmin(data)
-    return [mean, std, max, min]
+    dim = data.shape[-1]
+    row_sum = np.sum(data, axis=0).reshape(-1)[0]
+    return [mean, std, max, min, dim, row_sum]
 
 
 def same_image(test, gold_image_stats):
-    if type(test) != list and len(test) != 4:
+    if type(test) != list and len(test) != 6:
         test = image_stats(test)
     return np.allclose(test, gold_image_stats, rtol=1e-2, atol=1e-5)
 
@@ -46,8 +48,8 @@ def same_image(test, gold_image_stats):
 
 
 @pytest.mark.parametrize('subject, expected', [
-    (SUB_01_DATA, [0.14769913868900825, 0.18441673990363622, 1.0, 0.0]),
-    (SUB_02_DATA, [0.14961473411100507, 0.17965318394622729, 1.0, 0.0])
+    (SUB_01_DATA, [0.14769913868900825, 0.18441673990363622, 1.0, 0.0, 13, 6.659772184770346]),
+    (SUB_02_DATA, [0.14961473411100507, 0.17965318394622729, 1.0, 0.0, 13, 5.8241968078437045])
 ])
 def test_rescale(subject, expected):
     rsdata = rs.rescale(subject)
