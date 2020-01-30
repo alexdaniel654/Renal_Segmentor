@@ -5,9 +5,10 @@ import renal_segmentor as rs
 
 # Constants
 
-
-SUB_01_DATA = nib.load('./test_data/test_sub_01.PAR', scaling='fp').get_fdata()
-SUB_02_DATA = nib.load('./test_data/test_sub_02.PAR', scaling='fp').get_fdata()
+SUB_01_IMG = nib.load('./test_data/test_sub_01.PAR', scaling='fp')
+SUB_02_IMG = nib.load('./test_data/test_sub_02.PAR', scaling='fp')
+SUB_01_DATA = SUB_01_IMG.get_fdata()
+SUB_02_DATA = SUB_02_IMG.get_fdata()
 
 # Fixtures
 
@@ -57,6 +58,7 @@ def test_rescale(subject, expected):
 
 # Split Path
 
+
 @pytest.mark.parametrize('path, expected', [
     ('foo.PAR', ['', 'foo', '.PAR']),
     ('foo.nii.gz', ['', 'foo', '.nii.gz']),
@@ -79,3 +81,19 @@ def test_split_path(path, expected):
 def test_pre_process(subject, expected):
     pre_processed = rs.pre_process_img(subject)
     assert same_image(pre_processed, expected)
+
+# Un Pre_process
+
+@pytest.mark.parametrize('subject, img, expected', [
+    (SUB_01_DATA, SUB_01_IMG,
+     [15585.19294043287, 10395.261922505786, 73537.98252322787, 0.0, 13, 675689.1686444802]),
+    (SUB_02_DATA, SUB_02_IMG,
+     [16805.856856592778, 9647.452068107865, 65574.50210122531, 1.0363210171026915, 13, 1904548.5458263867]),
+    (rs.pre_process_img(SUB_01_DATA), SUB_01_IMG,
+     [0.14817189592712668, 0.18117106283408443, 1.0, 0.0, 13, 3.6336586087168503]),
+    (rs.pre_process_img(SUB_02_DATA), SUB_02_IMG,
+     [0.15021906059512827, 0.17657091709956615, 1.0, 0.0, 13, 4.267108061292017])
+])
+def test_un_pre_process(subject, img, expected):
+    un_pre_processed = rs.un_pre_process(subject, img)
+    assert same_image(un_pre_processed, expected)
