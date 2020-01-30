@@ -66,10 +66,11 @@ def test_rescale(data, expected):
     ('./foo/bar.nii.gz', ['./foo', 'bar', '.nii.gz'])
 ])
 def test_split_path(path, expected):
-    directory, base, extension = rs.split_path(path)
-    assert directory == expected[0]
-    assert base == expected[1]
-    assert extension == expected[2]
+    raw_data = rs.RawData(path)
+    # directory, base, extension = rs.split_path(path)
+    assert raw_data.directory == expected[0]
+    assert raw_data.base == expected[1]
+    assert raw_data.extension == expected[2]
 
 
 # Pre_process
@@ -100,6 +101,7 @@ def test_un_pre_process(data, img, expected):
 
 
 # Prediction
+
 @pytest.mark.parametrize('data, expected', [
     (SUB_01_DATA, [0.04029935, 0.19563328, 1.0, 0.0, 1, 9.1820955e-05]),
     (SUB_02_DATA, [0.040863547, 0.1969865, 1.0, 0.0, 1, 7.7813864e-05])

@@ -20,13 +20,25 @@ from gooey import Gooey, GooeyParser
 
 class RawData:
     def __init__(self, path):
-        self.directory, self.base, self.extension = split_path(path)
+        self.path = path
+        self.__split_path__()
+        self.img = nib.Nifti1Image
+        self.data = np.array
+        self.affine = np.array
 
+    def __split_path__(self):
+        self.directory = os.path.dirname(self.path)
+        self.base = os.path.splitext(os.path.basename(self.path))[0]
+        self.extension = os.path.splitext(os.path.basename(self.path))[1]
+        if self.extension == '.gz' and self.base[-4:] == '.nii':
+            self.extension = '.nii.gz'
+            self.base = self.base[:-4]
+
+    def load(self):
         if self.extension == 'PAR':
-            self.img = nib.load(path, scaling='fp')
+            self.img = nib.load(self.path, scaling='fp')
         else:
-            self.img = nib.load(path)
-
+            self.img = nib.load(self.path)
         self.data = self.img.get_fdata()
         self.affine = self.img.affine
 
@@ -80,16 +92,6 @@ def rescale(data):
     return data
 
 
-def split_path(full_path):
-    directory = os.path.dirname(full_path)
-    base = os.path.splitext(os.path.basename(full_path))[0]
-    extension = os.path.splitext(os.path.basename(full_path))[1]
-    if extension == '.gz' and base[-4:] == '.nii':
-        extension = '.nii.gz'
-        base = base[:-4]
-    return directory, base, extension
-
-
 def predict_mask(data):
     print('Loading model')
     model = load_model(resource_path('./models/very_extreme_augmentation_max_dice_0.9177.model'),
@@ -133,6 +135,7 @@ def main():
     # Import data
     print('Loading data')
     raw_data = RawData(args.input)
+    raw_data.load()
 
     print('Pre-processing')
     data = pre_process_img(raw_data.data)
