@@ -76,6 +76,16 @@ def split_path(full_path):
     return directory, base, extension
 
 
+def predict_mask(data):
+    print('Loading model')
+    model = load_model(resource_path('./models/very_extreme_augmentation_max_dice_0.9177.model'),
+                       custom_objects={'dice_coef_loss': dice_coef_loss, 'dice_coef': dice_coef})
+
+    print('Making prediction')
+    batch_size = 2 ** 3
+    prediction = model.predict(data, batch_size=batch_size)
+    return prediction
+    
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
     try:
@@ -118,13 +128,7 @@ def main():
     data = pre_process_img(data)
 
     # Predict mask
-    print('Loading model')
-    model = load_model(resource_path('./models/very_extreme_augmentation_max_dice_0.9177.model'),
-                       custom_objects={'dice_coef_loss': dice_coef_loss, 'dice_coef': dice_coef})
-
-    print('Making prediction')
-    batch_size = 2 ** 3
-    prediction = model.predict(data, batch_size=batch_size)
+    prediction = predict_mask(data)
 
     print('Outputting data')
     mask = un_pre_process(prediction, img)

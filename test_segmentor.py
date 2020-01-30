@@ -48,12 +48,12 @@ def same_image(test, gold_image_stats):
 # Rescale
 
 
-@pytest.mark.parametrize('subject, expected', [
+@pytest.mark.parametrize('data, expected', [
     (SUB_01_DATA, [0.14769913868900825, 0.18441673990363622, 1.0, 0.0, 13, 6.659772184770346]),
     (SUB_02_DATA, [0.14961473411100507, 0.17965318394622729, 1.0, 0.0, 13, 5.8241968078437045])
 ])
-def test_rescale(subject, expected):
-    rsdata = rs.rescale(subject)
+def test_rescale(data, expected):
+    rsdata = rs.rescale(data)
     assert same_image(rsdata, expected)
 
 # Split Path
@@ -74,17 +74,17 @@ def test_split_path(path, expected):
 
 # Pre_process
 
-@pytest.mark.parametrize('subject, expected', [
+@pytest.mark.parametrize('data, expected', [
     (SUB_01_DATA, [0.14816738145449654, 0.18183894498589623, 1.0, 0.0, 1, 0.0]),
     (SUB_02_DATA, [0.15022795636734432, 0.17748050040287047, 1.0, 0.0, 1, 0.0])
 ])
-def test_pre_process(subject, expected):
-    pre_processed = rs.pre_process_img(subject)
+def test_pre_process(data, expected):
+    pre_processed = rs.pre_process_img(data)
     assert same_image(pre_processed, expected)
 
 # Un Pre_process
 
-@pytest.mark.parametrize('subject, img, expected', [
+@pytest.mark.parametrize('data, img, expected', [
     (SUB_01_DATA, SUB_01_IMG,
      [15585.19294043287, 10395.261922505786, 73537.98252322787, 0.0, 13, 675689.1686444802]),
     (SUB_02_DATA, SUB_02_IMG,
@@ -94,6 +94,17 @@ def test_pre_process(subject, expected):
     (rs.pre_process_img(SUB_02_DATA), SUB_02_IMG,
      [0.15021906059512827, 0.17657091709956615, 1.0, 0.0, 13, 4.267108061292017])
 ])
-def test_un_pre_process(subject, img, expected):
-    un_pre_processed = rs.un_pre_process(subject, img)
+def test_un_pre_process(data, img, expected):
+    un_pre_processed = rs.un_pre_process(data, img)
     assert same_image(un_pre_processed, expected)
+
+
+# Prediction
+@pytest.mark.parametrize('data, expected', [
+    (SUB_01_DATA, [0.04029935, 0.19563328, 1.0, 0.0, 1, 9.1820955e-05]),
+    (SUB_02_DATA, [0.040863547, 0.1969865, 1.0, 0.0, 1, 7.7813864e-05])
+])
+def test_prediction(data, expected):
+    pre_processed_data = rs.pre_process_img(data)
+    prediction = rs.predict_mask(pre_processed_data)
+    assert same_image(prediction, expected)
