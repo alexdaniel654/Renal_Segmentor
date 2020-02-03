@@ -5,14 +5,13 @@ python:
   - 3.7
 cache: pip
 before_install:
-#  - chmod +x travis_test.sh
-#  - chmod +x travis_success.sh
   - pip install codecov pytest-cov
+  - sudo apt-get update
+  - sudo apt-get install git curl libsdl2-mixer-2.0-0 libsdl2-image-2.0-0 libsdl2-2.0-0
   - pip install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-16.04 wxPython
 install:
   - pip install -r requirements.txt
 script:
-#  - pytest
   - pytest --cov=./
 after_success:
   - codecov --token=$CODECOV_TOKEN
