@@ -85,6 +85,7 @@ def test_pre_process(data, expected):
 
 # Un Pre_process
 
+
 @pytest.mark.parametrize('data, img, expected', [
     (SUB_01_DATA, SUB_01_IMG,
      [15585.19294043287, 10395.261922505786, 73537.98252322787, 0.0, 13, 675689.1686444802]),
@@ -110,3 +111,30 @@ def test_prediction(data, expected):
     pre_processed_data = rs.pre_process_img(data)
     prediction = rs.predict_mask(pre_processed_data)
     assert same_image(prediction, expected)
+
+
+# Load data
+
+@pytest.mark.parametrize('path, expected', [
+    ('./test_data/test_sub_01.PAR',
+     [15586.417648035316, 12314.402055019415, 95094.74873995132, 0.0, 13, 1851954.3729744065]),
+    ('./test_data/test_sub_01.hdr',
+     [15586.417648035316, 12314.402055019415, 95094.74873995132, 0.0, 13, 1851954.3729744065]),
+    ('./test_data/test_sub_01.nii',
+     [15586.417648035316, 12314.402055019415, 95094.74873995132, 0.0, 13, 1851954.3729744065]),
+    ('./test_data/test_sub_01.nii.gz',
+     [15586.417648035316, 12314.402055019415, 95094.74873995132, 0.0, 13, 1851954.3729744065]),
+    ('./test_data/test_sub_02.PAR',
+     [16804.754730733697, 11854.72306071763, 91807.66119103732, 0.0, 13, 1350029.8990467489]),
+    ('./test_data/test_sub_02.hdr',
+     [16804.754730733697, 11854.72306071763, 91807.66119103732, 0.0, 13, 1350029.8990467489]),
+    ('./test_data/test_sub_02.nii',
+     [16804.754730733697, 11854.72306071763, 91807.66119103732, 0.0, 13, 1350029.8990467489]),
+    ('./test_data/test_sub_02.nii.gz',
+     [16804.754730733697, 11854.72306071763, 91807.66119103732, 0.0, 13, 1350029.8990467489]),
+])
+def test_load(path, expected):
+    raw_data = rs.RawData(path)
+    raw_data.load()
+    stats = image_stats(raw_data.data)
+    assert same_image(stats, expected)
