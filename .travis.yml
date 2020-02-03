@@ -1,0 +1,17 @@
+language: python
+dist: xenial
+python:
+  - 3.6
+  - 3.7
+cache: pip
+before_install:
+#  - chmod +x travis_test.sh
+#  - chmod +x travis_success.sh
+  - pip install codecov
+install:
+  - pip install .
+script:
+#  - pytest
+  - coverage pytest
+after_success:
+  - codecov --token=$CODECOV_TOKEN
