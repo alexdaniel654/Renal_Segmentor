@@ -7,12 +7,12 @@ cache: pip
 before_install:
 #  - chmod +x travis_test.sh
 #  - chmod +x travis_success.sh
-  - pip install codecov
+  - pip install codecov pytest-cov
   - pip install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-16.04 wxPython
 install:
   - pip install -r requirements.txt
 script:
 #  - pytest
-  - coverage pytest
+  - pytest --cov=./
 after_success:
   - codecov --token=$CODECOV_TOKEN
