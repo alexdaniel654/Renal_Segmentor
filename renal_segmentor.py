@@ -35,7 +35,7 @@ class RawData:
             self.base = self.base[:-4]
 
     def load(self):
-        if self.extension == 'PAR':
+        if self.extension == '.PAR':
             self.img = nib.load(self.path, scaling='fp')
         else:
             self.img = nib.load(self.path)
