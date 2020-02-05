@@ -94,7 +94,7 @@ def rescale(data):
 
 def predict_mask(data):
     print('Loading model')
-    model = load_model(resource_path('./models/very_extreme_augmentation_max_dice_0.9177.model'),
+    model = load_model(resource_path('./models/renal_segmentor.model'),
                        custom_objects={'dice_coef_loss': dice_coef_loss, 'dice_coef': dice_coef})
 
     print('Making prediction')
