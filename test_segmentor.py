@@ -110,7 +110,9 @@ def test_un_pre_process(data, img, expected):
 def test_prediction(data, expected):
     pre_processed_data = rs.pre_process_img(data)
     prediction = rs.predict_mask(pre_processed_data)
-    assert same_image(prediction, expected)
+    stats = image_stats(prediction)
+    print(stats)
+    assert same_image(stats, expected)
 
 
 # Load data
