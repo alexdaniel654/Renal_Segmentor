@@ -15,6 +15,32 @@ from keras.models import load_model
 import tensorflow as tf
 from gooey import Gooey, GooeyParser
 
+# Define Classes
+
+
+class RawData:
+    def __init__(self, path):
+        self.path = path
+        self.__split_path__()
+        self.img = nib.Nifti1Image
+        self.data = np.array
+        self.affine = np.array
+
+    def __split_path__(self):
+        self.directory = os.path.dirname(self.path)
+        self.base = os.path.splitext(os.path.basename(self.path))[0]
+        self.extension = os.path.splitext(os.path.basename(self.path))[1]
+        if self.extension == '.gz' and self.base[-4:] == '.nii':
+            self.extension = '.nii.gz'
+            self.base = self.base[:-4]
+
+    def load(self):
+        if self.extension == '.PAR':
+            self.img = nib.load(self.path, scaling='fp')
+        else:
+            self.img = nib.load(self.path)
+        self.data = self.img.get_fdata()
+        self.affine = self.img.affine
 
 # Define Functions
 
@@ -33,7 +59,9 @@ def dice_coef_loss(y_true, y_pred):
 
 
 def pre_process_img(raw_data):
-    data = np.swapaxes(raw_data, 0, 2)
+    data = np.copy(raw_data)
+    data = np.flip(data, 1)
+    data = np.swapaxes(data, 0, 2)
     data = np.swapaxes(data, 1, 2)
     for n in range(data.shape[0]):
         data[n, :, :] = rescale(data[n, :, :])
@@ -42,12 +70,14 @@ def pre_process_img(raw_data):
     return data
 
 
-def un_process_mask(mask, base_img):
-    mask = np.squeeze(mask)
-    mask = np.swapaxes(mask, 0, 2)
-    mask = np.swapaxes(mask, 0, 1)
-    mask = resize(mask, (base_img.shape[0], base_img.shape[1], base_img.shape[2]))
-    return mask
+def un_pre_process(raw_data, base_img):
+    data = np.copy(raw_data)
+    data = np.squeeze(data)
+    data = np.swapaxes(data, 0, 2)
+    data = np.swapaxes(data, 0, 1)
+    data = resize(data, (base_img.shape[0], base_img.shape[1], base_img.shape[2]))
+    data = np.flip(data, 1)
+    return data
 
 
 def rescale(data):
@@ -62,14 +92,15 @@ def rescale(data):
     return data
 
 
-def split_path(full_path):
-    directory = os.path.dirname(full_path)
-    base = os.path.splitext(os.path.basename(full_path))[0]
-    extension = os.path.splitext(os.path.basename(full_path))[1]
-    if extension == '.gz' and base[-4:] == '.nii':
-        extension = '.nii.gz'
-        base = base[:-4]
-    return directory, base, extension
+def predict_mask(data):
+    print('Loading model')
+    model = load_model(resource_path('./models/renal_segmentor.model'),
+                       custom_objects={'dice_coef_loss': dice_coef_loss, 'dice_coef': dice_coef})
+
+    print('Making prediction')
+    batch_size = 2 ** 3
+    prediction = model.predict(data, batch_size=batch_size)
+    return prediction
 
 
 def resource_path(relative_path):
@@ -103,41 +134,32 @@ def main():
 
     # Import data
     print('Loading data')
-    directory, base, extension = split_path(args.input)
-    if extension == 'PAR':
-        img = nib.load(args.input, scaling='fp')
-    else:
-        img = nib.load(args.input)
-    data = img.get_data()
+    raw_data = RawData(args.input)
+    raw_data.load()
 
     print('Pre-processing')
-    data = pre_process_img(data)
+    data = pre_process_img(raw_data.data)
 
     # Predict mask
-    print('Loading model')
-    model = load_model(resource_path('./models/very_extreme_augmentation_300_epochs_max_dice_0.9262.model'),
-                       custom_objects={'dice_coef_loss': dice_coef_loss, 'dice_coef': dice_coef})
-
-    print('Making prediction')
-    batch_size = 2 ** 3
-    prediction = model.predict(data, batch_size=batch_size)
+    prediction = predict_mask(data)
 
     print('Outputting data')
-    mask = un_process_mask(prediction, img)
+    mask = un_pre_process(prediction, raw_data.img)
     if args.binary:
         mask = (mask > 0.5) * 1
 
     # Output mask
     if not args.output:
-        output_path = directory + '/' + base + '_mask.nii.gz'
+        output_path = raw_data.directory + '/' + raw_data.base + '_mask.nii.gz'
     else:
         output_path = args.output
 
-    mask_img = nib.Nifti1Image(mask, img.affine)
+    mask_img = nib.Nifti1Image(mask, raw_data.affine)
     nib.save(mask_img, output_path)
 
+# TODO Make this so it exports with output data rather than input data
     if args.raw:
-        nib.save(img, directory + '/' + base + '.nii.gz')
+        nib.save(raw_data.img, raw_data.directory + '/' + raw_data.base + '.nii.gz')
 
 
 if __name__ == "__main__":
