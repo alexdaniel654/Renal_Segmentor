@@ -15,7 +15,7 @@ networkx==2.4
 nibabel==3.0.1
 numpy==1.18.1
 Pillow==7.0.0
-protobuf==3.11.2
+protobuf==3.11.3
 psutil==5.6.7
 PyWavelets==1.1.1
 PyYAML==5.3
