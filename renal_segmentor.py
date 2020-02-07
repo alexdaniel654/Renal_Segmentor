@@ -10,8 +10,8 @@ import os
 import nibabel as nib
 import numpy as np
 from skimage.transform import resize
-from keras import backend as K
-from keras.models import load_model
+from tensorflow.keras import backend as K
+from tensorflow.keras.models import load_model
 import tensorflow as tf
 from gooey import Gooey, GooeyParser
 
