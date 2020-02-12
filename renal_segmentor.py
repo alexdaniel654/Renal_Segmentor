@@ -129,7 +129,8 @@ def main():
     parser.add_argument('-r', '--raw', action='store_true', default=False, dest='raw',
                         help='Output the raw data used for the segmentation.')
     parser.add_argument('-output', default=False,
-                        help='The name you wish to give your output mask.')
+                        help='The name you wish to give your output mask.',
+                        widget='FileSaver')
     args = parser.parse_args()
 
     # Import data
@@ -153,6 +154,11 @@ def main():
         output_path = raw_data.directory + '/' + raw_data.base + '_mask.nii.gz'
     else:
         output_path = args.output
+
+    if os.path.splitext(os.path.basename(output_path))[1] == '':
+        output_path += '.nii.gz'
+    elif os.path.splitext(os.path.basename(output_path))[1] == '.nii':
+        output_path += '.gz'
 
     mask_img = nib.Nifti1Image(mask, raw_data.affine)
     nib.save(mask_img, output_path)
