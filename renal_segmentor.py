@@ -163,9 +163,8 @@ def main():
     mask_img = nib.Nifti1Image(mask, raw_data.affine)
     nib.save(mask_img, output_path)
 
-# TODO Make this so it exports with output data rather than input data
     if args.raw:
-        nib.save(raw_data.img, raw_data.directory + '/' + raw_data.base + '.nii.gz')
+        nib.save(raw_data.img, os.path.dirname(output_path) + '/' + raw_data.base + '.nii.gz')
 
 
 if __name__ == "__main__":
