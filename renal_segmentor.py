@@ -106,7 +106,7 @@ def predict_mask(data):
 def get_parser():
     # Make argparser
     parser = GooeyParser(prog='Renal Segmentor', description='Segment renal MRI images.')
-    parser.add_argument('input', default='test_data/test_sub_01.PAR',
+    parser.add_argument('input',
                         help='The image you wish to segment',
                         widget='FileChooser')
     parser.add_argument('-b', '--binary', action='store_true', default=False, dest='binary',
