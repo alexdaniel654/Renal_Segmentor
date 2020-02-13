@@ -3,12 +3,12 @@ import gooey
 gooey_root = os.path.dirname(gooey.__file__)
 gooey_languages = Tree(os.path.join(gooey_root, 'languages'), prefix = 'gooey/languages')
 gooey_images = Tree(os.path.join(gooey_root, 'images'), prefix = 'gooey/images')
-custom_images = Tree('D:\\ppxad2\\ownCloud\\University\\Renal Imaging\\Nephrectomy\\Deep-Renal\\Standalone_Segmentor\\icons', prefix='icons')
+custom_images = Tree('D:\\ppxad2\\ownCloud\\University\\Renal Imaging\\Renal_Segmentor\\icons', prefix='icons')
 block_cipher = None
 
 
 a = Analysis(['renal_segmentor.py'],
-             pathex=['D:\\ppxad2\\ownCloud\\University\\Renal Imaging\\Nephrectomy\\Deep-Renal\\Standalone_Segmentor'],
+             pathex=['D:\\ppxad2\\ownCloud\\University\\Renal Imaging\\Renal_Segmentor'],
              binaries=[],
              datas=[('models\*.model', 'models')],
              hiddenimports=[],
