@@ -2,6 +2,7 @@ import pytest
 import numpy as np
 import nibabel as nib
 import renal_segmentor as rs
+from gooey.python_bindings import argparse_to_json
 
 # Constants
 
@@ -9,6 +10,7 @@ SUB_01_IMG = nib.load('./test_data/test_sub_01.PAR', scaling='fp')
 SUB_02_IMG = nib.load('./test_data/test_sub_02.PAR', scaling='fp')
 SUB_01_DATA = SUB_01_IMG.get_fdata()
 SUB_02_DATA = SUB_02_IMG.get_fdata()
+
 
 # Fixtures
 
@@ -44,6 +46,7 @@ def same_image(test, gold_image_stats):
         test = image_stats(test)
     return np.allclose(test, gold_image_stats, rtol=1e-2, atol=1e-5)
 
+
 # Test Cases
 # Rescale
 
@@ -55,6 +58,7 @@ def same_image(test, gold_image_stats):
 def test_rescale(data, expected):
     rsdata = rs.rescale(data)
     assert same_image(rsdata, expected)
+
 
 # Split Path
 
@@ -82,6 +86,7 @@ def test_split_path(path, expected):
 def test_pre_process(data, expected):
     pre_processed = rs.pre_process_img(data)
     assert same_image(pre_processed, expected)
+
 
 # Un Pre_process
 
@@ -138,3 +143,24 @@ def test_load(path, expected):
     raw_data.load()
     stats = image_stats(raw_data.data)
     assert same_image(stats, expected)
+
+
+@pytest.mark.parametrize('action, widget, expected', [
+    (1, 'FileChooser', {'id': 'input',
+                        'type': 'FileChooser',
+                        'required': True}),
+    (2, 'CheckBox', {'id': '-b',
+                     'type': 'CheckBox',
+                     'required': False}),
+    (3, 'CheckBox', {'id': '-r',
+                     'type': 'CheckBox',
+                     'required': False}),
+    (4, 'TextField', {'id': '-output',
+                      'type': 'TextField',
+                      'required': False})
+])
+def test_parser(action, widget, expected):
+    parser = rs.get_parser()
+    assert len(parser._actions) == 5
+    result = argparse_to_json.action_to_json(parser._actions[action], widget, {})
+    assert expected.items() <= result.items()
