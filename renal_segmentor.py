@@ -103,6 +103,21 @@ def predict_mask(data):
     return prediction
 
 
+def get_parser():
+    # Make argparser
+    parser = GooeyParser(prog='Renal Segmentor', description='Segment renal MRI images.')
+    parser.add_argument('input', default='test_data/test_sub_01.PAR',
+                        help='The image you wish to segment',
+                        widget='FileChooser')
+    parser.add_argument('-b', '--binary', action='store_true', default=False, dest='binary',
+                        help='The mask output will only be 0 or 1.')
+    parser.add_argument('-r', '--raw', action='store_true', default=False, dest='raw',
+                        help='Output the raw data used for the segmentation.')
+    parser.add_argument('-output', default=False,
+                        help='The name you wish to give your output mask.')
+    return parser
+
+
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
     try:
@@ -119,17 +134,7 @@ def resource_path(relative_path):
 def main():
     tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
-    # Make argparser
-    parser = GooeyParser(prog='Renal Segmentor', description='Segment renal MRI images.')
-    parser.add_argument('input',
-                        help='The image you wish to segment',
-                        widget='FileChooser')
-    parser.add_argument('-b', '--binary', action='store_true', default=False, dest='binary',
-                        help='The mask output will only be 0 or 1.')
-    parser.add_argument('-r', '--raw', action='store_true', default=False, dest='raw',
-                        help='Output the raw data used for the segmentation.')
-    parser.add_argument('-output', default=False,
-                        help='The name you wish to give your output mask.')
+    parser = get_parser()
     args = parser.parse_args()
 
     # Import data
