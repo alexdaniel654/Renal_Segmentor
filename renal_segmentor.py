@@ -107,14 +107,27 @@ def get_parser():
     # Make argparser
     parser = GooeyParser(prog='Renal Segmentor', description='Segment renal MRI images.')
     parser.add_argument('input',
-                        help='The image you wish to segment',
-                        widget='FileChooser')
-    parser.add_argument('-b', '--binary', action='store_true', default=False, dest='binary',
+                        metavar='Input Data',
+                        help='The image you wish to segment.',
+                        widget='FileChooser',
+    parser.add_argument('-b', '--binary',
+                        metavar='Binary Output',
+                        action='store_true',
+                        default=False,
+                        dest='binary',
                         help='The mask output will only be 0 or 1.')
-    parser.add_argument('-r', '--raw', action='store_true', default=False, dest='raw',
+    parser.add_argument('-r', '--raw',
+                        metavar='Output Raw Data',
+                        action='store_true',
+                        default=False,
+                        dest='raw',
                         help='Output the raw data used for the segmentation.')
-    parser.add_argument('-output', default=False,
-                        help='The name you wish to give your output mask.')
+    parser.add_argument('-output',
+                        metavar='Output file',
+                        default=False,
+                        help='The name and location of your output mask.',
+                        widget='FileSaver',
+                        )
     return parser
 
 
