@@ -110,23 +110,36 @@ def get_parser():
                         metavar='Input Data',
                         help='The image you wish to segment.',
                         widget='FileChooser',
+                        gooey_options={'wildcard':
+                                       'Common Files (*.PAR, *.nii.gz, *.hdr, *.nii)|*.PAR; *.nii.gz; *.hdr; *.nii'
+                                       'All files (*.*)|*.*',
+                                       'message': 'Select Input Data'}
+                        )
     parser.add_argument('-b', '--binary',
                         metavar='Binary Output',
                         action='store_true',
                         default=False,
                         dest='binary',
-                        help='The mask output will only be 0 or 1.')
+                        help='The mask output will only be 0 or 1.'
+                        )
     parser.add_argument('-r', '--raw',
                         metavar='Output Raw Data',
                         action='store_true',
                         default=False,
                         dest='raw',
-                        help='Output the raw data used for the segmentation.')
+                        help='Output the raw data used for the segmentation.'
+                        )
     parser.add_argument('-output',
                         metavar='Output file',
                         default=False,
                         help='The name and location of your output mask.',
                         widget='FileSaver',
+                        gooey_options={'wildcard':
+                                       "Compressed Nifti (*.nii.gz)|*.nii.gz"
+                                       "Nifti (*.nii)|*.nii"
+                                       "Analyze (*.hdr/*.img)|*.hdr"
+                                       "All files (*.*)|*.*",
+                                       'message': "Select Output"}
                         )
     return parser
 
