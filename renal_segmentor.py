@@ -105,7 +105,7 @@ def predict_mask(data):
 
 def get_parser():
     # Make argparser
-    parser = GooeyParser(prog='Renal Segmentor', description='Segment renal MRI images.')
+    parser = GooeyParser(description='Segment renal MRI images.')
     parser.add_argument('input',
                         metavar='Input Data',
                         help='The image you wish to segment.',
