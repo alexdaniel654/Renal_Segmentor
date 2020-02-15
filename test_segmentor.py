@@ -155,8 +155,8 @@ def test_load(path, expected):
     (3, 'CheckBox', {'id': '-r',
                      'type': 'CheckBox',
                      'required': False}),
-    (4, 'TextField', {'id': '-output',
-                      'type': 'TextField',
+    (4, 'FileSaver', {'id': '-output',
+                      'type': 'FileSaver',
                       'required': False})
 ])
 def test_parser(action, widget, expected):

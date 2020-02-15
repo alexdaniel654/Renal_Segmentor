@@ -105,16 +105,42 @@ def predict_mask(data):
 
 def get_parser():
     # Make argparser
-    parser = GooeyParser(prog='Renal Segmentor', description='Segment renal MRI images.')
+    parser = GooeyParser(description='Segment renal MRI images.')
     parser.add_argument('input',
-                        help='The image you wish to segment',
-                        widget='FileChooser')
-    parser.add_argument('-b', '--binary', action='store_true', default=False, dest='binary',
-                        help='The mask output will only be 0 or 1.')
-    parser.add_argument('-r', '--raw', action='store_true', default=False, dest='raw',
-                        help='Output the raw data used for the segmentation.')
-    parser.add_argument('-output', default=False,
-                        help='The name you wish to give your output mask.')
+                        metavar='Input Data',
+                        help='The image you wish to segment.',
+                        widget='FileChooser',
+                        gooey_options={'wildcard':
+                                       'Common Files (*.PAR, *.nii.gz, *.hdr, *.nii)|*.PAR; *.nii.gz; *.hdr; *.nii'
+                                       'All files (*.*)|*.*',
+                                       'message': 'Select Input Data'}
+                        )
+    parser.add_argument('-b', '--binary',
+                        metavar='Binary Output',
+                        action='store_true',
+                        default=False,
+                        dest='binary',
+                        help='The mask output will only be 0 or 1.'
+                        )
+    parser.add_argument('-r', '--raw',
+                        metavar='Output Raw Data',
+                        action='store_true',
+                        default=False,
+                        dest='raw',
+                        help='Output the raw data used for the segmentation.'
+                        )
+    parser.add_argument('-output',
+                        metavar='Output file',
+                        default=False,
+                        help='The name and location of your output mask.',
+                        widget='FileSaver',
+                        gooey_options={'wildcard':
+                                       "Compressed Nifti (*.nii.gz)|*.nii.gz"
+                                       "Nifti (*.nii)|*.nii"
+                                       "Analyze (*.hdr/*.img)|*.hdr"
+                                       "All files (*.*)|*.*",
+                                       'message': "Select Output"}
+                        )
     return parser
 
 
@@ -159,12 +185,16 @@ def main():
     else:
         output_path = args.output
 
+    if os.path.splitext(os.path.basename(output_path))[1] == '':
+        output_path += '.nii.gz'
+    elif os.path.splitext(os.path.basename(output_path))[1] == '.nii':
+        output_path += '.gz'
+
     mask_img = nib.Nifti1Image(mask, raw_data.affine)
     nib.save(mask_img, output_path)
 
-# TODO Make this so it exports with output data rather than input data
     if args.raw:
-        nib.save(raw_data.img, raw_data.directory + '/' + raw_data.base + '.nii.gz')
+        nib.save(raw_data.img, os.path.dirname(output_path) + '/' + raw_data.base + '.nii.gz')
 
 
 if __name__ == "__main__":
