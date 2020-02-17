@@ -11,7 +11,7 @@ before_install:
   - pip install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-16.04 wxPython
   - mkdir -p models
   - cd models
-  - wget https://renal-segmentor-models.s3.eu-west-2.amazonaws.com/renal_segmentor.model
+  - wget https://github.com/alexdaniel654/Renal_Segmentor_Weights/releases/download/v0.1.0/renal_segmentor.model
   - cd ..
 install:
   - pip install -r requirements.txt
