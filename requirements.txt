@@ -6,7 +6,7 @@ Gooey==1.0.3
 google-pasta==0.1.8
 grpcio==1.27.2
 h5py==2.10.0
-imageio==2.6.1
+imageio==2.8.0
 Keras==2.3.1
 Keras-Applications==1.0.8
 Keras-Preprocessing==1.1.0
