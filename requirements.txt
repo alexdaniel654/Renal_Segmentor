@@ -3,7 +3,7 @@ astor==0.8.1
 decorator==4.4.2
 gast==0.3.3
 Gooey==1.0.3
-google-pasta==0.1.8
+google-pasta==0.2.0
 grpcio==1.27.2
 h5py==2.10.0
 imageio==2.8.0
