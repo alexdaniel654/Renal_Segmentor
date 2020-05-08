@@ -20,7 +20,7 @@ psutil==5.7.0
 pytest==5.4.1
 PyWavelets==1.1.1
 PyYAML==5.3.1
-scikit-image==0.16.2
+scikit-image==0.17.0
 scipy==1.4.1
 six==1.14.0
 tensorboard==2.2.1
