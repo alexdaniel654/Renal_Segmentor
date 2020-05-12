@@ -9,7 +9,7 @@ h5py==2.10.0
 imageio==2.8.0
 Keras==2.3.1
 Keras-Applications==1.0.8
-Keras-Preprocessing==1.1.0
+Keras-Preprocessing==1.1.1
 Markdown==3.2.1
 networkx==2.4
 nibabel==3.1.0
