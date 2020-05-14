@@ -10,7 +10,7 @@ imageio==2.8.0
 Keras==2.3.1
 Keras-Applications==1.0.8
 Keras-Preprocessing==1.1.2
-Markdown==3.2.1
+Markdown==3.2.2
 networkx==2.4
 nibabel==3.1.0
 numpy==1.18.3
