@@ -4,7 +4,7 @@ decorator==4.4.2
 gast==0.3.3
 Gooey==1.0.3
 google-pasta==0.2.0
-grpcio==1.27.2
+grpcio==1.28.1
 h5py==2.10.0
 imageio==2.8.0
 Keras==2.3.1
@@ -12,9 +12,9 @@ Keras-Applications==1.0.8
 Keras-Preprocessing==1.1.0
 Markdown==3.2.1
 networkx==2.4
-nibabel==3.0.2
-numpy==1.18.2
-Pillow==7.0.0
+nibabel==3.1.0
+numpy==1.18.3
+Pillow==7.1.1
 protobuf==3.11.3
 psutil==5.7.0
 pytest==5.4.1
@@ -23,10 +23,10 @@ PyYAML==5.3.1
 scikit-image==0.16.2
 scipy==1.4.1
 six==1.14.0
-tensorboard==2.2.0
+tensorboard==2.2.1
 tensorflow==2.1.0
 tensorflow-estimator==2.1.0
 termcolor==1.1.0
-Werkzeug==1.0.0
+Werkzeug==1.0.1
 wrapt==1.12.1
 wxPython==4.0.7.post2
