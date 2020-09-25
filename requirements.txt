@@ -24,7 +24,7 @@ scikit-image==0.17.2
 scipy==1.5.2
 six==1.15.0
 tensorboard==2.3.0
-tensorflow==2.3.0
+tensorflow==2.3.1
 tensorflow-estimator==2.3.0
 termcolor==1.1.0
 Werkzeug==1.0.1
