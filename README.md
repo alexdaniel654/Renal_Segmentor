@@ -2,6 +2,7 @@
 [![Build Status](https://travis-ci.com/alexdaniel654/Renal_Segmentor.svg?token=fiWxYk2SzMsVfjbp9BPV&branch=master)](https://travis-ci.com/alexdaniel654/Renal_Segmentor)
 [![codecov](https://codecov.io/gh/alexdaniel654/Renal_Segmentor/branch/master/graph/badge.svg?token=6oSiDfrFpJ)](https://codecov.io/gh/alexdaniel654/Renal_Segmentor)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![DOI](https://zenodo.org/badge/236753300.svg)](https://zenodo.org/badge/latestdoi/236753300)
 
 An application to segment kidneys from renal MRI data using a convolutional neural network (CNN).
 
