@@ -111,7 +111,13 @@ def get_parser():
                         help='The image you wish to segment.',
                         widget='FileChooser',
                         gooey_options={'wildcard':
-                                       'Common Files (*.PAR, *.nii.gz, *.hdr, *.nii)|*.PAR; *.nii.gz; *.hdr; *.nii'
+                                       'Common Files (*.PAR, *.nii.gz, '
+                                       '*.hdr, *.nii)|*.PAR; *.nii.gz; '
+                                       '*.hdr; *.nii|'
+                                       'Compressed Nifti (*.nii.gz)|*.nii.gz|'
+                                       'Nifti (*.nii)|*.nii|'
+                                       'Philips (*.PAR)|*.PAR|'
+                                       'Analyze (*.hdr/*.img)|*.hdr|'
                                        'All files (*.*)|*.*',
                                        'message': 'Select Input Data'}
                         )
@@ -131,14 +137,15 @@ def get_parser():
                         )
     parser.add_argument('-output',
                         metavar='Output file',
-                        default=False,
-                        help='The name and location of your output mask.',
+                        default=None,
+                        help='The name and location of your output mask. ('
+                             'Default is to save with input data)',
                         widget='FileSaver',
                         gooey_options={'wildcard':
-                                       "Compressed Nifti (*.nii.gz)|*.nii.gz"
-                                       "Nifti (*.nii)|*.nii"
-                                       "Analyze (*.hdr/*.img)|*.hdr"
-                                       "All files (*.*)|*.*",
+                                       'Compressed Nifti (*.nii.gz)|*.nii.gz|'
+                                       'Nifti (*.nii)|*.nii|'
+                                       'Analyze (*.hdr/*.img)|*.hdr|'
+                                       'All files (*.*)|*.*',
                                        'message': "Select Output"}
                         )
     return parser
@@ -187,8 +194,6 @@ def main():
 
     if os.path.splitext(os.path.basename(output_path))[1] == '':
         output_path += '.nii.gz'
-    elif os.path.splitext(os.path.basename(output_path))[1] == '.nii':
-        output_path += '.gz'
 
     mask_img = nib.Nifti1Image(mask, raw_data.affine)
     nib.save(mask_img, output_path)
