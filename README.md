@@ -6,7 +6,7 @@
 
 An application to segment kidneys from renal MRI data using a convolutional neural network (CNN).
 
-<h2 align="center"><img src="icons/running_icon.png" height="128"></h2>
+<h2 align="center"><img src="images/banner.png" height="128"></h2>
 
 ## Using the segmentor from an executable
 
@@ -20,10 +20,12 @@ An application to segment kidneys from renal MRI data using a convolutional neur
 8. The application will run and a few seconds later a box will appear saying the program completed successfully. 
 9. If you want to segment some more data click the `edit` button on the bottom of the finished screen, if you're done, click `close`.
 
+![Interface](images/screenshot.png)
+
 ## How it works
 
 The methods used by this software are currently in press. Once they've been published links will be added here to the software and data used to train the network.
 
 ## Contributing
 
-Feel free to open a pull request if you have a feature you want to develop or [drop me an email](mailto:alexander.daniel@nottingham.ac.uk) to discuss things further. Some initial areas that would make a good first project are making the GUI able to select and process multiple files at once and upgrading to tensorflow v2.x.
+Feel free to open a pull request if you have a feature you want to develop or [drop me an email](mailto:alexander.daniel@nottingham.ac.uk) to discuss things further. Some initial areas that would make a good first project are making the GUI able to select and process multiple files at once and outputting kidney volumes to text files.

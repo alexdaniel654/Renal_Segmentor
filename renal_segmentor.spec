@@ -3,7 +3,7 @@ import gooey
 gooey_root = os.path.dirname(gooey.__file__)
 gooey_languages = Tree(os.path.join(gooey_root, 'languages'), prefix = 'gooey/languages')
 gooey_images = Tree(os.path.join(gooey_root, 'images'), prefix = 'gooey/images')
-custom_images = Tree('D:\\ppxad2\\ownCloud\\University\\Renal Imaging\\Renal_Segmentor\\icons', prefix='icons')
+custom_images = Tree('D:\\ppxad2\\ownCloud\\University\\Renal Imaging\\Renal_Segmentor\\images', prefix='images')
 block_cipher = None
 
 
@@ -39,4 +39,4 @@ exe = EXE(pyz,
           runtime_tmpdir=None,
           console=False,
           windowed=True,
-          icon=os.path.join('icons','program_icon.ico'))
+          icon=os.path.join('images','program_icon.ico'))
