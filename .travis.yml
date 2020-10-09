@@ -8,7 +8,7 @@ before_install:
   - pip install codecov pytest-cov
   - sudo apt-get update
   - sudo apt-get install git curl libsdl2-mixer-2.0-0 libsdl2-image-2.0-0 libsdl2-2.0-0
-  - pip install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-16.04 wxPython==4.0.7post2
+#  - pip install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-16.04 wxPython==4.0.7post2
   - mkdir -p models
   - cd models
   - wget https://github.com/alexdaniel654/Renal_Segmentor_Weights/releases/download/v0.1.0/renal_segmentor.model
