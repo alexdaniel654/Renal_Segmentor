@@ -12,7 +12,7 @@ Keras-Applications==1.0.8
 Keras-Preprocessing==1.1.2
 Markdown==3.3.1
 networkx==2.5
-nibabel==3.1.1
+nibabel==3.2.0
 numpy==1.19.2
 Pillow==8.0.0
 protobuf==3.13.0
