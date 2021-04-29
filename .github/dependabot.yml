@@ -1,0 +1,29 @@
+version: 2
+updates:
+- package-ecosystem: pip
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "04:00"
+    timezone: Europe/London
+  open-pull-requests-limit: 10
+  assignees:
+  - alexdaniel654
+  labels:
+  - dependencies
+  ignore:
+  - dependency-name: grpcio
+    versions:
+    - 1.35.0
+    - 1.36.0
+    - 1.36.1
+  - dependency-name: h5py
+    versions:
+    - 3.1.0
+    - 3.2.0
+  - dependency-name: pytest
+    versions:
+    - 6.2.2
+  - dependency-name: pyinstaller
+    versions:
+    - "4.2"
