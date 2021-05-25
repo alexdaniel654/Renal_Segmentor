@@ -6,14 +6,17 @@ Created on Fri Jul 12 11:25:34 2019
 """
 
 # Import Packages
-import os
+
 import nibabel as nib
 import numpy as np
+import os
+import sys
+import tensorflow as tf
+
+from gooey import Gooey, GooeyParser
 from skimage.transform import resize
 from tensorflow.keras import backend as K
 from tensorflow.keras.models import load_model
-import tensorflow as tf
-from gooey import Gooey, GooeyParser
 
 # Define Classes
 
