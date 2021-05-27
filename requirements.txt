@@ -3,5 +3,5 @@ nibabel==3.2.1
 numpy==1.19.2
 pyinstaller==4.0
 pytest==6.2.4
-scikit-image==0.17.2
+scikit-image==0.18.1
 tensorflow==2.5.0
