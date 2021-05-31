@@ -1,4 +1,4 @@
-Gooey==1.0.3
+Gooey==1.0.8
 nibabel==3.2.1
 numpy==1.19.2
 pyinstaller==4.3
