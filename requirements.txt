@@ -4,4 +4,4 @@ numpy==1.19.2
 pyinstaller==4.3
 pytest==6.2.4
 scikit-image==0.18.2
-tensorflow==2.5.0
+tensorflow==2.5.1
