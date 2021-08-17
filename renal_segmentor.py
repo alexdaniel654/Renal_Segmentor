@@ -14,6 +14,7 @@ import sys
 import tensorflow as tf
 
 from gooey import Gooey, GooeyParser
+from skimage.measure import label, regionprops
 from skimage.transform import resize
 from tensorflow.keras import backend as K
 from tensorflow.keras.models import load_model
@@ -106,6 +107,19 @@ def predict_mask(data):
     return prediction
 
 
+def cleanup(mask):
+    clean_mask = np.zeros(mask.shape, dtype=np.uint8)
+    label_mask = label(mask, connectivity=1)
+    props = regionprops(label_mask)
+    areas = [region.area for region in props]
+    kidney_labels = np.argpartition(areas, -2)[-2:]  # This means there have to be two kidneys in the scan...
+
+    clean_mask[label_mask == props[kidney_labels[0]].label] = 1
+    clean_mask[label_mask == props[kidney_labels[1]].label] = 1
+
+    return clean_mask
+
+
 def get_parser():
     # Make argparser
     parser = GooeyParser(description='Segment renal MRI images.')
@@ -130,6 +144,14 @@ def get_parser():
                         default=False,
                         dest='binary',
                         help='The mask output will only be 0 or 1.'
+                        )
+    parser.add_argument('-p', '--post_process',
+                        metavar='Apply Post Processing',
+                        action='store_true',
+                        default=True,
+                        dest='post_process',
+                        help='Remove all but the two largest regions of the '
+                             'mask.'
                         )
     parser.add_argument('-r', '--raw',
                         metavar='Output Raw Data',
@@ -186,6 +208,11 @@ def main():
 
     print('Outputting data')
     mask = un_pre_process(prediction, raw_data.img)
+
+    if args.post_process:
+        cleaned_mask = cleanup((mask > 0.05) * 1)
+        mask[cleaned_mask < 0.5] = 0.0
+
     if args.binary:
         mask = (mask > 0.5) * 1
 
