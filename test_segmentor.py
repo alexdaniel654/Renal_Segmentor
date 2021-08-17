@@ -4,29 +4,15 @@ import nibabel as nib
 import renal_segmentor as rs
 from gooey.python_bindings import argparse_to_json
 
+
 # Constants
+
 
 SUB_01_IMG = nib.load('./test_data/test_sub_01.PAR', scaling='fp')
 SUB_02_IMG = nib.load('./test_data/test_sub_02.PAR', scaling='fp')
 SUB_01_DATA = SUB_01_IMG.get_fdata()
 SUB_02_DATA = SUB_02_IMG.get_fdata()
 
-
-# Fixtures
-
-
-# @pytest.fixture
-# def sub_01_data():
-#     img = nib.load('./test_data/test_sub_01.PAR', scaling='fp')
-#     data = img.get_fdata()
-#     return data
-#
-#
-# @pytest.fixture
-# def sub_02_data():
-#     img = nib.load('./test_data/test_sub_02.PAR', scaling='fp')
-#     data = img.get_fdata()
-#     return data
 
 # Helpers
 
@@ -118,6 +104,19 @@ def test_prediction(data, expected):
     assert same_image(prediction, expected)
 
 
+@pytest.mark.parametrize('data, img, expected', [
+    (SUB_01_DATA, SUB_01_IMG, [0.013820779914529915, 0.11674658863146309, 1, 0, 13, 0]),
+    (SUB_02_DATA, SUB_02_IMG, [0.012880608974358974, 0.11275947360115085, 1, 0, 13, 0])
+])
+def test_mask_cleanup(data, img, expected):
+    pre_processed_data = rs.pre_process_img(data)
+    prediction = rs.predict_mask(pre_processed_data)
+    prediction = rs.un_pre_process(prediction, img)
+    prediction_cleaned = rs.cleanup(prediction)
+    print(image_stats(prediction_cleaned))
+    assert same_image(prediction_cleaned, expected)
+
+
 # Load data
 
 @pytest.mark.parametrize('path, expected', [
@@ -152,15 +151,18 @@ def test_load(path, expected):
     (2, 'CheckBox', {'id': '-b',
                      'type': 'CheckBox',
                      'required': False}),
-    (3, 'CheckBox', {'id': '-r',
+    (3, 'CheckBox', {'id': '-p',
                      'type': 'CheckBox',
                      'required': False}),
-    (4, 'FileSaver', {'id': '-output',
+    (4, 'CheckBox', {'id': '-r',
+                     'type': 'CheckBox',
+                     'required': False}),
+    (5, 'FileSaver', {'id': '-output',
                       'type': 'FileSaver',
                       'required': False})
 ])
 def test_parser(action, widget, expected):
     parser = rs.get_parser()
-    assert len(parser._actions) == 5
+    assert len(parser._actions) == 6
     result = argparse_to_json.action_to_json(parser._actions[action], widget, {})
     assert expected.items() <= result.items()
