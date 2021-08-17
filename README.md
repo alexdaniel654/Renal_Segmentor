@@ -24,8 +24,11 @@ An application to segment kidneys from renal MRI data using a convolutional neur
 
 ## How it works
 
-The methods used by this software are currently in press. Once they've been published links will be added here to the software and data used to train the network.
+The methods used in this software are outlined in Daniel AJ, _et al_. Automated renal segmentation in healthy and chronic kidney disease subjects using a convolutional neural network. Magnetic Resonance in Medicine 2021;86:1125–1136 doi: [https://doi.org/10.1002/mrm.28768](https://doi.org/10.1002/mrm.28768).
+
+The dataset used to train this network is freely available on Zenodo, doi: [https://doi.org/10.5281/zenodo.5153567](https://doi.org/10.5281/zenodo.5153567).
+
 
 ## Contributing
 
-Feel free to open a pull request if you have a feature you want to develop or [drop me an email](mailto:alexander.daniel@nottingham.ac.uk) to discuss things further. Some initial areas that would make a good first project are making the GUI able to select and process multiple files at once and outputting kidney volumes to text files.
+Feel free to open a pull request if you have a feature you want to develop or [drop me an email](mailto:alexander.daniel@nottingham.ac.uk) to discuss things further.
