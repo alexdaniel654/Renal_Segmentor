@@ -33,7 +33,7 @@ jobs:
         pip install -r requirements.txt
         mkdir -p models
         cd models
-        wget https://zenodo.org/record/4894406/files/whole_kidney_cnn.model
+        wget -O renal_segmentor.model https://zenodo.org/record/4894406/files/whole_kidney_cnn.model
         cd ..
     - name: Lint with flake8
       run: |
