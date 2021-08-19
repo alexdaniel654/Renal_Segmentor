@@ -14,6 +14,7 @@ import sys
 import tensorflow as tf
 
 from gooey import Gooey, GooeyParser
+from nibabel.processing import conform
 from skimage.measure import label, regionprops
 from skimage.transform import resize
 from tensorflow.keras import backend as K
@@ -28,7 +29,10 @@ class RawData:
         self.__split_path__()
         self.img = nib.Nifti1Image
         self.data = np.array
+        self.mask = np.array
         self.affine = np.array
+        self.shape = tuple
+        self.zoom = tuple
 
     def __split_path__(self):
         self.directory = os.path.dirname(self.path)
@@ -45,6 +49,43 @@ class RawData:
             self.img = nib.load(self.path)
         self.data = self.img.get_fdata()
         self.affine = self.img.affine
+        self.shape = self.img.shape
+        self.zoom = self.img.header.get_zooms()
+
+    def get_mask(self, weights_path='./models/renal_segmentor.model'):
+        data = conform(self.img, out_shape=(240, 240, self.shape[-1]),
+                       voxel_size=(1.458, 1.458, self.zoom[-1] * 0.998),
+                       orientation='LIP')
+        data = np.flip(data, 1)
+        data = np.swapaxes(data, 0, 2)
+        data = np.swapaxes(data, 1, 2)
+        data = self._rescale(data)
+        data = resize(data, (data.shape[0], 256, 256))
+        data = data.reshape((data.shape[0], data.shape[1], data.shape[2], 1))
+        model = load_model(resource_path(weights_path),
+                           custom_objects={'dice_coef_loss': dice_coef_loss,
+                                           'dice_coef': dice_coef})
+        batch_size = 2 ** 3
+        mask = model.predict(data, batch_size=batch_size)
+        mask = np.squeeze(mask)
+        mask = np.swapaxes(mask, 0, 2)
+        mask = np.swapaxes(mask, 0, 1)
+        mask = resize(mask, self.shape)
+        self.mask = np.flip(mask, 1)
+        return self.mask
+
+    @staticmethod
+    def _rescale(data):
+        black = np.mean(data) - 0.5 * np.std(data)
+        if black < data.min():
+            black = data.min()
+        white = np.mean(data) + 4 * np.std(data)
+        if white > data.max():
+            white = data.max()
+        data = np.clip(data, black, white) - black
+        data = data / (white - black)
+        return data
+
 
 # Define Functions
 
@@ -60,51 +101,6 @@ def dice_coef(y_true, y_pred):
 def dice_coef_loss(y_true, y_pred):
     loss = 1 - dice_coef(y_true, y_pred)
     return loss
-
-
-def pre_process_img(raw_data):
-    data = np.copy(raw_data)
-    data = np.flip(data, 1)
-    data = np.swapaxes(data, 0, 2)
-    data = np.swapaxes(data, 1, 2)
-    for n in range(data.shape[0]):
-        data[n, :, :] = rescale(data[n, :, :])
-    data = resize(data, (data.shape[0], 256, 256))
-    data = data.reshape((data.shape[0], data.shape[1], data.shape[2], 1))
-    return data
-
-
-def un_pre_process(raw_data, base_img):
-    data = np.copy(raw_data)
-    data = np.squeeze(data)
-    data = np.swapaxes(data, 0, 2)
-    data = np.swapaxes(data, 0, 1)
-    data = resize(data, (base_img.shape[0], base_img.shape[1], base_img.shape[2]))
-    data = np.flip(data, 1)
-    return data
-
-
-def rescale(data):
-    black = np.mean(data) - 0.5 * np.std(data)
-    if black < data.min():
-        black = data.min()
-    white = np.mean(data) + 4 * np.std(data)
-    if white > data.max():
-        white = data.max()
-    data = np.clip(data, black, white)-black
-    data = data/(white-black)
-    return data
-
-
-def predict_mask(data):
-    print('Loading model')
-    model = load_model(resource_path('./models/renal_segmentor.model'),
-                       custom_objects={'dice_coef_loss': dice_coef_loss, 'dice_coef': dice_coef})
-
-    print('Making prediction')
-    batch_size = 2 ** 3
-    prediction = model.predict(data, batch_size=batch_size)
-    return prediction
 
 
 def cleanup(mask):
@@ -200,14 +196,7 @@ def main():
     raw_data = RawData(args.input)
     raw_data.load()
 
-    print('Pre-processing')
-    data = pre_process_img(raw_data.data)
-
-    # Predict mask
-    prediction = predict_mask(data)
-
-    print('Outputting data')
-    mask = un_pre_process(prediction, raw_data.img)
+    mask = raw_data.get_mask()
 
     if args.post_process:
         cleaned_mask = cleanup((mask > 0.05) * 1)
