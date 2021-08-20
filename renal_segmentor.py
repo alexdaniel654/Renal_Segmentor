@@ -51,11 +51,13 @@ class RawData:
         self.affine = self.img.affine
         self.shape = self.img.shape
         self.zoom = self.img.header.get_zooms()
+        self.orientation = nib.orientations.aff2axcodes(self.affine)
 
     def get_mask(self, weights_path='./models/renal_segmentor.model'):
-        data = conform(self.img, out_shape=(240, 240, self.shape[-1]),
-                       voxel_size=(1.458, 1.458, self.zoom[-1] * 0.998),
-                       orientation='LIP')
+        img = conform(self.img, out_shape=(240, 240, self.shape[-1]),
+                      voxel_size=(1.458, 1.458, self.zoom[-1] * 0.998),
+                      orientation='LIP')
+        data = img.get_fdata()
         data = np.flip(data, 1)
         data = np.swapaxes(data, 0, 2)
         data = np.swapaxes(data, 1, 2)
@@ -63,15 +65,20 @@ class RawData:
         data = resize(data, (data.shape[0], 256, 256))
         data = data.reshape((data.shape[0], data.shape[1], data.shape[2], 1))
         model = load_model(resource_path(weights_path),
-                           custom_objects={'dice_coef_loss': dice_coef_loss,
-                                           'dice_coef': dice_coef})
+                           custom_objects={'dice_coef_loss':
+                                           self._dice_coef_loss,
+                                           'dice_coef': self._dice_coef})
         batch_size = 2 ** 3
         mask = model.predict(data, batch_size=batch_size)
         mask = np.squeeze(mask)
         mask = np.swapaxes(mask, 0, 2)
         mask = np.swapaxes(mask, 0, 1)
-        mask = resize(mask, self.shape)
-        self.mask = np.flip(mask, 1)
+        mask = np.flip(mask, 1)
+        mask = resize(mask, (240, 240, self.shape[-1]))
+        mask_img = nib.Nifti1Image(mask, img.affine)
+        mask_img = conform(mask_img, out_shape=self.shape,
+                           voxel_size=self.zoom, orientation=self.orientation)
+        self.mask = mask_img.get_fdata()
         return self.mask
 
     @staticmethod
@@ -86,21 +93,21 @@ class RawData:
         data = data / (white - black)
         return data
 
+    @staticmethod
+    def _dice_coef(y_true, y_pred):
+        smooth = 1.0
+        y_true_f = K.flatten(y_true)
+        y_pred_f = K.flatten(y_pred)
+        intersection = K.sum(y_true_f * y_pred_f)
+        return (2. * intersection + smooth) / (
+                    K.sum(y_true_f) + K.sum(y_pred_f) + smooth)
+
+    def _dice_coef_loss(self, y_true, y_pred):
+        loss = 1 - self._dice_coef(y_true, y_pred)
+        return loss
+
 
 # Define Functions
-
-
-def dice_coef(y_true, y_pred):
-    smooth = 1.0
-    y_true_f = K.flatten(y_true)
-    y_pred_f = K.flatten(y_pred)
-    intersection = K.sum(y_true_f * y_pred_f)
-    return (2. * intersection + smooth) / (K.sum(y_true_f) + K.sum(y_pred_f) + smooth)
-
-
-def dice_coef_loss(y_true, y_pred):
-    loss = 1 - dice_coef(y_true, y_pred)
-    return loss
 
 
 def cleanup(mask):
