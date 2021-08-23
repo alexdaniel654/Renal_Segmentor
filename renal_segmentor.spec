@@ -19,9 +19,17 @@ a = Analysis(['renal_segmentor.py'],
              win_private_assemblies=False,
              cipher=block_cipher,
              noarchive=False)
+splash = Splash('images\\splash.png',
+                binaries=a.binaries,
+                datas=a.datas,
+                text_pos=(10, 40),
+                text_size=12,
+                text_color='black')
 pyz = PYZ(a.pure, a.zipped_data,
           cipher=block_cipher)
 exe = EXE(pyz,
+          splash,
+          splash.binaries,
           a.scripts,
           a.binaries,
           a.zipfiles,
