@@ -1,14 +1,14 @@
 # -*- mode: python ; coding: utf-8 -*-
 import gooey
 gooey_root = os.path.dirname(gooey.__file__)
-gooey_languages = Tree(os.path.join(gooey_root, 'languages'), prefix = 'gooey/languages')
-gooey_images = Tree(os.path.join(gooey_root, 'images'), prefix = 'gooey/images')
-custom_images = Tree('D:\\ppxad2\\ownCloud\\University\\Renal Imaging\\Renal_Segmentor\\images', prefix='images')
+gooey_languages = Tree(os.path.join(gooey_root, 'languages'), prefix='gooey/languages')
+gooey_images = Tree(os.path.join(gooey_root, 'images'), prefix='gooey/images')
+custom_images = Tree('.\\images', prefix='images')
 block_cipher = None
 
 
 a = Analysis(['renal_segmentor.py'],
-             pathex=['D:\\ppxad2\\ownCloud\\University\\Renal Imaging\\Renal_Segmentor'],
+             pathex=['renal_segmentor.py'],
              binaries=[],
              datas=[('models\*.model', 'models')],
              hiddenimports=[],
@@ -20,14 +20,14 @@ a = Analysis(['renal_segmentor.py'],
              cipher=block_cipher,
              noarchive=False)
 pyz = PYZ(a.pure, a.zipped_data,
-             cipher=block_cipher)
+          cipher=block_cipher)
 exe = EXE(pyz,
           a.scripts,
           a.binaries,
           a.zipfiles,
           a.datas,
-          gooey_languages, # Add them in to collected files
-          gooey_images, # Same here.
+          gooey_languages,  # Add them in to collected files
+          gooey_images,  # Same here.
           custom_images,
           [],
           name='renal_segmentor',
@@ -39,4 +39,4 @@ exe = EXE(pyz,
           runtime_tmpdir=None,
           console=False,
           windowed=True,
-          icon=os.path.join('images','program_icon.ico'))
+          icon=os.path.join('images', 'program_icon.ico'))
