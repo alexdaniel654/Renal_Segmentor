@@ -190,6 +190,13 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 
+# This chunk means if arguments are passed to the script/executable then it
+# runs via the command line and if no arguments are passed, it runs the GUI
+if len(sys.argv) >= 2:
+    if not '--ignore-gooey' in sys.argv:
+        sys.argv.append('--ignore-gooey')
+
+
 @Gooey(program_name='Renal Segmentor',
        image_dir=resource_path('./images'))
 def main():
