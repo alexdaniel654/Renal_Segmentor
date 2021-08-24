@@ -1,4 +1,7 @@
-## [1.1.0] - 2021/08/24
+# Changelog
+
+
+## [1.1.0] - 2021-08-24
 
 ### Added
 * Tool now supports different fields of view #184 #190
@@ -14,17 +17,14 @@
 * Move CI to GitHub Actions #168
 * Include link to paper and training data in readme
 
-## [1.0.0] - 2020/10/06
-
-### Added
+## [1.0.0] - 2020-10-06
 
 ### Changed
 * File extension filters on input selection
 * Lots of dependencies
 
-### Fixed
 
-## [0.1.0] - 2020/02/17
+## [0.1.0] - 2020-02-17
 
 ### Added
 * Basic GUI
@@ -33,5 +33,3 @@
 
 ### Changed
 * Lots of dependencies #11
-
-### Fixed
