@@ -4,7 +4,7 @@
 * Tool now supports different fields of view #184 #190
 * Post-processing option #183 #187
 * Automatically run as CLI if arguments are passed #189 #191
-* New release action
+* New release action #186
 
 ### Changed
 * Weights are now stored on Zenodo for better visibility #185 #188
