@@ -11,7 +11,7 @@ An application to segment kidneys from renal MRI data using a convolutional neur
 ## Using the segmentor from an executable
 ### As a Graphical User Interface (GUI)
 
-1. Download the [latest release](https://github.com/alexdaniel654/Renal_Segmentor/releases/download/latest/renal_segmentor.exe)
+1. Download the [latest release](https://github.com/alexdaniel654/Renal_Segmentor/releases/latest/download/renal_segmentor.exe)
 2. Double click `renal_segmentor.exe`. The GUI takes quite a long time to load (~30 sec) and doesn't have a splash screen so be patient.
 3. Once the GUI has loaded, click `Browse` and select the raw data you want to segment. Supported file types are `.PAR/.REC`, `.nii`, `.nii.gz` and `.img/.hdr`, other file types supported by [nibable](https://nipy.org/nibabel/api.html#file-formats) may work but are untested.
 4. If you want the mask to be just 0s and 1s tick the `binary` check box, if you want the CNNs probability that the voxel is a kidney, leave it unchecked.
@@ -23,7 +23,7 @@ An application to segment kidneys from renal MRI data using a convolutional neur
 10. If you want to segment some more data click the `edit` button on the bottom of the finished screen, if you're done, click `close`.
 
 ### Via a Command Line Interface (CLI)
-1. Download the [latest release](https://github.com/alexdaniel654/Renal_Segmentor/releases/download/latest/renal_segmentor.exe)
+1. Download the [latest release](https://github.com/alexdaniel654/Renal_Segmentor/releases/latest/download/renal_segmentor.exe)
 2. Run the `renal_segmentor.exe -h` to generate a list of available parameters. The application runs via a command line if any input arguments are specified, if not, it opens as a GUI.
 
 ![Interface](images/screenshot.png)
