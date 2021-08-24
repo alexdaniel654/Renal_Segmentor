@@ -1,5 +1,5 @@
 # Renal Segmentor
-[![Build Status](https://travis-ci.com/alexdaniel654/Renal_Segmentor.svg?token=fiWxYk2SzMsVfjbp9BPV&branch=master)](https://travis-ci.com/alexdaniel654/Renal_Segmentor)
+[![Python CI](https://github.com/alexdaniel654/Renal_Segmentor/actions/workflows/python_ci.yml/badge.svg?branch=master)](https://github.com/alexdaniel654/Renal_Segmentor/actions/workflows/python_ci.yml)
 [![codecov](https://codecov.io/gh/alexdaniel654/Renal_Segmentor/branch/master/graph/badge.svg?token=6oSiDfrFpJ)](https://codecov.io/gh/alexdaniel654/Renal_Segmentor)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![DOI](https://zenodo.org/badge/236753300.svg)](https://zenodo.org/badge/latestdoi/236753300)
@@ -27,6 +27,9 @@ An application to segment kidneys from renal MRI data using a convolutional neur
 2. Run the `renal_segmentor.exe -h` to generate a list of available parameters. The application runs via a command line if any input arguments are specified, if not, it opens as a GUI.
 
 ![Interface](images/screenshot.png)
+
+## Citing Renal Segmentor
+If you have made use of renal segmentor for your work, please cite Daniel AJ, _et al_. Automated renal segmentation in healthy and chronic kidney disease subjects using a convolutional neural network. Magnetic Resonance in Medicine 2021;86:1125–1136 doi: [https://doi.org/10.1002/mrm.28768](https://doi.org/10.1002/mrm.28768). Alternatively if you wish to cite a specific software version, each release has an individual DOI on Zenodo, the DOI for the latest release can be [found here](https://doi.org/10.5281/zenodo.4068850).
 
 ## How it works
 
