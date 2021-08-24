@@ -198,7 +198,8 @@ if len(sys.argv) >= 2:
 
 
 @Gooey(program_name='Renal Segmentor',
-       image_dir=resource_path('./images'))
+       image_dir=resource_path('./images'),
+       default_size=(610, 580))
 def main():
     tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
