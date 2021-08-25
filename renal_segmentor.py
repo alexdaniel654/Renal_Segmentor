@@ -202,7 +202,36 @@ if len(sys.argv) >= 2:
        progress_regex=r"^Processed (?P<current>\d+) of (?P<total>\d+) files$",
        progress_expr="current / total * 100",
        timing_options={'show_time_remaining': True,
-                       'hide_time_remaining_on_complete': True}
+                       'hide_time_remaining_on_complete': True},
+       menu=[{
+           'name': 'File',
+           'items': [{
+                'type': 'AboutDialog',
+                'menuTitle': 'About',
+                'name': 'Renal Segmentor',
+                'description': 'Automatically segment the kidneys from MRI '
+                               'data.',
+                'version': '1.1.0',
+                'copyright': '2021',
+                'website': 'https://github.com/alexdaniel654/Renal_Segmentor',
+                'developer': 'https://www.researchgate.net/profile/'
+                             'Alexander-Daniel-2',
+                'license': 'GPLv3'
+           }, {
+               'type': 'Link',
+               'menuTitle': 'Check for new versions',
+               'url': 'https://github.com/alexdaniel654/Renal_Segmentor'
+                      '/releases/latest'
+           }]
+       }, {
+           'name': 'Help',
+           'items': [{
+               'type': 'Link',
+               'menuTitle': 'Documentation',
+               'url': 'https://github.com/alexdaniel654/'
+                      'Renal_Segmentor#renal-segmentor'
+           }]
+       }]
        )
 def main():
     tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
