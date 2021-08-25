@@ -115,7 +115,9 @@ def cleanup(mask):
     label_mask = label(mask, connectivity=1)
     props = regionprops(label_mask)
     areas = [region.area for region in props]
-    kidney_labels = np.argpartition(areas, -2)[-2:]  # This means there have to be two kidneys in the scan...
+
+    # This means there have to be two kidneys in the scan...
+    kidney_labels = np.argpartition(areas, -2)[-2:]
 
     clean_mask[label_mask == props[kidney_labels[0]].label] = 1
     clean_mask[label_mask == props[kidney_labels[1]].label] = 1
