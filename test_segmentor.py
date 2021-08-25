@@ -135,9 +135,9 @@ def test_get_mask(path, expected, expected_cleaned):
     (4, 'CheckBox', {'id': '-r',
                      'type': 'CheckBox',
                      'required': False}),
-    (5, 'FileSaver', {'id': '-output',
-                      'type': 'FileSaver',
-                      'required': False})
+    (5, 'DirChooser', {'id': '-output',
+                       'type': 'DirChooser',
+                       'required': False})
 ])
 def test_parser(action, widget, expected):
     parser = rs.get_parser()

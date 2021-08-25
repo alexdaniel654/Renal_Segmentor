@@ -197,6 +197,11 @@ if len(sys.argv) >= 2:
 @Gooey(program_name='Renal Segmentor',
        image_dir=resource_path('./images'),
        default_size=(610, 620),
+       progress_regex=r"^Processed (?P<current>\d+) of (?P<total>\d+) files$",
+       progress_expr="current / total * 100",
+       timing_options={'show_time_remaining': True,
+                       'hide_time_remaining_on_complete': True}
+       )
 def main():
     tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
@@ -231,6 +236,8 @@ def main():
         if args.raw:
             nib.save(raw_data.img, os.path.join(out_dir, raw_data.base +
                                                 '.nii.gz'))
+
+        print(f'Processed {n + 1} of {len(inputs)} files')
 
 
 if __name__ == "__main__":
