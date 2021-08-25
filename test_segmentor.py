@@ -1,12 +1,16 @@
-import pytest
 import numpy as np
 import numpy.testing as npt
 import nibabel as nib
+import os
+import pytest
 import renal_segmentor as rs
+import shutil
+import sys
+
 from gooey.python_bindings import argparse_to_json
+from unittest.mock import patch
 
 # Constants
-
 
 SUB_01_IMG = nib.load('./test_data/test_sub_01.PAR', scaling='fp')
 SUB_02_IMG = nib.load('./test_data/test_sub_02.PAR', scaling='fp')
@@ -15,7 +19,6 @@ SUB_02_DATA = SUB_02_IMG.get_fdata()
 
 
 # Helpers
-
 
 def image_stats(data):
     mean = np.nanmean(data)
@@ -135,9 +138,9 @@ def test_get_mask(path, expected, expected_cleaned):
     (4, 'CheckBox', {'id': '-r',
                      'type': 'CheckBox',
                      'required': False}),
-    (5, 'FileSaver', {'id': '-output',
-                      'type': 'FileSaver',
-                      'required': False})
+    (5, 'DirChooser', {'id': '-output',
+                       'type': 'DirChooser',
+                       'required': False})
 ])
 def test_parser(action, widget, expected):
     parser = rs.get_parser()
@@ -145,3 +148,35 @@ def test_parser(action, widget, expected):
     result = argparse_to_json.action_to_json(parser._actions[action], widget,
                                              {})
     assert expected.items() <= result.items()
+
+
+def test_segment_cli():
+    os.makedirs('test_output', exist_ok=True)
+
+    # One input file
+    test_args = ['renal_segmentor',
+                 './test_data/test_sub_01.PAR',
+                 '-output', 'test_output']
+    with patch.object(sys, 'argv', test_args):
+        rs.main()
+        assert os.path.exists('test_output/test_sub_01_mask.nii.gz') == 1
+
+        for f in os.listdir('test_output'):
+            os.remove(os.path.join('test_output', f))
+
+    # Multiple input files
+    test_args = ['renal_segmentor',
+                 './test_data/test_sub_01.PAR',
+                 './test_data/test_sub_02.PAR',
+                 '-output', 'test_output']
+    with patch.object(sys, 'argv', test_args):
+        rs.main()
+        assert os.path.exists('test_output/test_sub_01_mask.nii.gz') == 1
+        assert os.path.exists('test_output/test_sub_02_mask.nii.gz') == 1
+
+        for f in os.listdir('test_output'):
+            os.remove(os.path.join('test_output', f))
+
+    shutil.rmtree('test_output')
+
+

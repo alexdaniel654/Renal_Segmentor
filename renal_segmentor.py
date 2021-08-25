@@ -115,7 +115,9 @@ def cleanup(mask):
     label_mask = label(mask, connectivity=1)
     props = regionprops(label_mask)
     areas = [region.area for region in props]
-    kidney_labels = np.argpartition(areas, -2)[-2:]  # This means there have to be two kidneys in the scan...
+
+    # This means there have to be two kidneys in the scan...
+    kidney_labels = np.argpartition(areas, -2)[-2:]
 
     clean_mask[label_mask == props[kidney_labels[0]].label] = 1
     clean_mask[label_mask == props[kidney_labels[1]].label] = 1
@@ -129,7 +131,8 @@ def get_parser():
     parser.add_argument('input',
                         metavar='Input Data',
                         help='The image you wish to segment.',
-                        widget='FileChooser',
+                        nargs='*',
+                        widget='MultiFileChooser',
                         gooey_options={'wildcard':
                                        'Common Files (*.PAR, *.nii.gz, '
                                        '*.hdr, *.nii)|*.PAR; *.nii.gz; '
@@ -164,17 +167,13 @@ def get_parser():
                         help='Output the raw data used for the segmentation.'
                         )
     parser.add_argument('-output',
-                        metavar='Output file',
+                        metavar='Output Directory',
                         default=None,
-                        help='The name and location of your output mask. ('
-                             'Default is to save with input data)',
-                        widget='FileSaver',
-                        gooey_options={'wildcard':
-                                       'Compressed Nifti (*.nii.gz)|*.nii.gz|'
-                                       'Nifti (*.nii)|*.nii|'
-                                       'Analyze (*.hdr/*.img)|*.hdr|'
-                                       'All files (*.*)|*.*',
-                                       'message': "Select Output"}
+                        help='The location to save outputs. (Default is '
+                             'to save with input data)',
+                        widget='DirChooser',
+                        gooey_options={'full_width': True,
+                                       'message': "Select Output Directory"}
                         )
     return parser
 
@@ -199,7 +198,12 @@ if len(sys.argv) >= 2:
 
 @Gooey(program_name='Renal Segmentor',
        image_dir=resource_path('./images'),
-       default_size=(610, 580))
+       default_size=(610, 620),
+       progress_regex=r"^Processed (?P<current>\d+) of (?P<total>\d+) files$",
+       progress_expr="current / total * 100",
+       timing_options={'show_time_remaining': True,
+                       'hide_time_remaining_on_complete': True}
+       )
 def main():
     tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
@@ -207,33 +211,35 @@ def main():
     args = parser.parse_args()
 
     # Import data
-    print('Loading data')
-    raw_data = RawData(args.input)
-    raw_data.load()
+    inputs = args.input
+    for n, file in enumerate(inputs):
+        raw_data = RawData(file)
+        raw_data.load()
 
-    mask = raw_data.get_mask()
+        mask = raw_data.get_mask()
 
-    if args.post_process:
-        cleaned_mask = cleanup((mask > 0.05) * 1)
-        mask[cleaned_mask < 0.5] = 0.0
+        if args.post_process:
+            cleaned_mask = cleanup((mask > 0.05) * 1)
+            mask[cleaned_mask < 0.5] = 0.0
 
-    if args.binary:
-        mask = (mask > 0.5) * 1
+        if args.binary:
+            mask = (mask > 0.5) * 1
 
-    # Output mask
-    if not args.output:
-        output_path = raw_data.directory + '/' + raw_data.base + '_mask.nii.gz'
-    else:
-        output_path = args.output
+        # Output mask
+        if not args.output:
+            out_dir = raw_data.directory
+        else:
+            out_dir = args.output
+        mask_fname = os.path.join(out_dir, raw_data.base + '_mask.nii.gz')
 
-    if os.path.splitext(os.path.basename(output_path))[1] == '':
-        output_path += '.nii.gz'
+        mask_img = nib.Nifti1Image(mask, raw_data.affine)
+        nib.save(mask_img, mask_fname)
 
-    mask_img = nib.Nifti1Image(mask, raw_data.affine)
-    nib.save(mask_img, output_path)
+        if args.raw:
+            nib.save(raw_data.img, os.path.join(out_dir, raw_data.base +
+                                                '.nii.gz'))
 
-    if args.raw:
-        nib.save(raw_data.img, os.path.dirname(output_path) + '/' + raw_data.base + '.nii.gz')
+        print(f'Processed {n + 1} of {len(inputs)} files')
 
 
 if __name__ == "__main__":
