@@ -10,6 +10,7 @@ Created on Fri Jul 12 11:25:34 2019
 import nibabel as nib
 import numpy as np
 import os
+import pandas as pd
 import sys
 import tensorflow as tf
 
@@ -33,6 +34,9 @@ class RawData:
         self.affine = np.array
         self.shape = tuple
         self.zoom = tuple
+        self.tkv = np.nan
+        self.lkv = np.nan
+        self.rkv = np.nan
 
     def __split_path__(self):
         self.directory = os.path.dirname(self.path)
@@ -53,7 +57,8 @@ class RawData:
         self.zoom = self.img.header.get_zooms()
         self.orientation = nib.orientations.aff2axcodes(self.affine)
 
-    def get_mask(self, weights_path='./models/renal_segmentor.model'):
+    def get_mask(self, post_process=True,
+                 weights_path='./models/renal_segmentor.model'):
         img = conform(self.img, out_shape=(240, 240, self.shape[-1]),
                       voxel_size=(1.458, 1.458, self.zoom[-1] * 0.998),
                       orientation='LIP')
@@ -75,23 +80,49 @@ class RawData:
         mask = np.swapaxes(mask, 0, 1)
         mask = np.flip(mask, 1)
         mask = resize(mask, (240, 240, self.shape[-1]))
+        if post_process:
+            cleaned_mask = self._cleanup(mask > 0.05)
+            mask[cleaned_mask < 0.5] = 0.0
         mask_img = nib.Nifti1Image(mask, img.affine)
         mask_img = conform(mask_img, out_shape=self.shape,
                            voxel_size=self.zoom, orientation=self.orientation)
-        self.mask = mask_img.get_fdata()
+        self.mask = self._rescale(mask_img.get_fdata(), 0, 1)
+        self.tkv = (np.sum(self.mask > 0.5) *
+                    np.prod(self.zoom))/1000
+        self.lkv = (np.sum(self.mask[120:] > 0.5) *
+                    np.prod(self.zoom))/1000
+        self.rkv = (np.sum(self.mask[:120] > 0.5) *
+                    np.prod(self.zoom)) / 1000
         return self.mask
 
     @staticmethod
-    def _rescale(data):
-        black = np.mean(data) - 0.5 * np.std(data)
-        if black < data.min():
-            black = data.min()
-        white = np.mean(data) + 4 * np.std(data)
-        if white > data.max():
-            white = data.max()
+    def _rescale(data, black=None, white=None):
+        if black is None:
+            black = np.mean(data) - 0.5 * np.std(data)
+            if black < data.min():
+                black = data.min()
+        if white is None:
+            white = np.mean(data) + 4 * np.std(data)
+            if white > data.max():
+                white = data.max()
         data = np.clip(data, black, white) - black
         data = data / (white - black)
         return data
+
+    @staticmethod
+    def _cleanup(mask):
+        clean_mask = np.zeros(mask.shape, dtype=np.uint8)
+        label_mask = label(mask > 0.5, connectivity=1)
+        props = regionprops(label_mask)
+        areas = [region.area for region in props]
+
+        # This means there have to be two kidneys in the scan...
+        kidney_labels = np.argpartition(areas, -2)[-2:]
+
+        clean_mask[label_mask == props[kidney_labels[0]].label] = 1
+        clean_mask[label_mask == props[kidney_labels[1]].label] = 1
+
+        return clean_mask
 
     @staticmethod
     def _dice_coef(y_true, y_pred):
@@ -108,22 +139,6 @@ class RawData:
 
 
 # Define Functions
-
-
-def cleanup(mask):
-    clean_mask = np.zeros(mask.shape, dtype=np.uint8)
-    label_mask = label(mask, connectivity=1)
-    props = regionprops(label_mask)
-    areas = [region.area for region in props]
-
-    # This means there have to be two kidneys in the scan...
-    kidney_labels = np.argpartition(areas, -2)[-2:]
-
-    clean_mask[label_mask == props[kidney_labels[0]].label] = 1
-    clean_mask[label_mask == props[kidney_labels[1]].label] = 1
-
-    return clean_mask
-
 
 def get_parser():
     # Make argparser
@@ -154,7 +169,7 @@ def get_parser():
     parser.add_argument('-p', '--post_process',
                         metavar='Apply Post Processing',
                         action='store_true',
-                        default=True,
+                        default=False,
                         dest='post_process',
                         help='Remove all but the two largest regions of the '
                              'mask.'
@@ -165,6 +180,14 @@ def get_parser():
                         default=False,
                         dest='raw',
                         help='Output the raw data used for the segmentation.'
+                        )
+    parser.add_argument('-v', '--volumes',
+                        metavar='Export Kidney Volumes',
+                        action='store_true',
+                        default=False,
+                        dest='volumes',
+                        help='Export the total, left and right kidney '
+                             'volumes to a csv.'
                         )
     parser.add_argument('-output',
                         metavar='Output Directory',
@@ -240,16 +263,18 @@ def main():
     args = parser.parse_args()
 
     # Import data
-    inputs = args.input
-    for n, file in enumerate(inputs):
-        raw_data = RawData(file)
+    volumes = pd.DataFrame(index=args.input, columns=['tkv', 'lkv', 'rkv'])
+    n = 0
+    for path, row in volumes.iterrows():
+        n += 1
+        raw_data = RawData(path)
         raw_data.load()
 
-        mask = raw_data.get_mask()
+        mask = raw_data.get_mask(post_process=args.post_process)
 
-        if args.post_process:
-            cleaned_mask = cleanup((mask > 0.05) * 1)
-            mask[cleaned_mask < 0.5] = 0.0
+        volumes.loc[path, 'tkv'] = raw_data.tkv
+        volumes.loc[path, 'lkv'] = raw_data.lkv
+        volumes.loc[path, 'rkv'] = raw_data.rkv
 
         if args.binary:
             mask = (mask > 0.5) * 1
@@ -259,6 +284,7 @@ def main():
             out_dir = raw_data.directory
         else:
             out_dir = args.output
+
         mask_fname = os.path.join(out_dir, raw_data.base + '_mask.nii.gz')
 
         mask_img = nib.Nifti1Image(mask, raw_data.affine)
@@ -268,7 +294,12 @@ def main():
             nib.save(raw_data.img, os.path.join(out_dir, raw_data.base +
                                                 '.nii.gz'))
 
-        print(f'Processed {n + 1} of {len(inputs)} files')
+        print(f'Processed {n} of {len(volumes)} files')
+
+    if args.volumes:
+        volumes.to_csv(os.path.join(out_dir, 'volumes.csv'),
+                       index_label='File',
+                       header=['TKV (ml)', 'LKV (ml)', 'RKV (ml)'])
 
 
 if __name__ == "__main__":
