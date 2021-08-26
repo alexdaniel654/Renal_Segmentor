@@ -219,7 +219,7 @@ if len(sys.argv) >= 2:
                 'license': 'GPLv3'
            }, {
                'type': 'Link',
-               'menuTitle': 'Check for new versions',
+               'menuTitle': 'Check for New Versions',
                'url': 'https://github.com/alexdaniel654/Renal_Segmentor'
                       '/releases/latest'
            }]
@@ -230,6 +230,10 @@ if len(sys.argv) >= 2:
                'menuTitle': 'Documentation',
                'url': 'https://github.com/alexdaniel654/'
                       'Renal_Segmentor#renal-segmentor'
+           }, {
+               'type': 'Link',
+               'menuTitle': 'Report an Issue',
+               'url': 'https://github.com/alexdaniel654/Renal_Segmentor/issues'
            }]
        }]
        )
