@@ -4,6 +4,7 @@
 ## Unmerged
 
 ### Added
+* Kidney volume calculations #32
 * Process multiple files at once #30 #194
 * Menu bar with about, help and latest version links #40 #41
 

@@ -221,7 +221,7 @@ if len(sys.argv) >= 2:
 
 @Gooey(program_name='Renal Segmentor',
        image_dir=resource_path('./images'),
-       default_size=(610, 620),
+       default_size=(610, 640),
        progress_regex=r"^Processed (?P<current>\d+) of (?P<total>\d+) files$",
        progress_expr="current / total * 100",
        timing_options={'show_time_remaining': True,
