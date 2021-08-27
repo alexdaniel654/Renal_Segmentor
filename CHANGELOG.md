@@ -1,10 +1,10 @@
 # Changelog
 
 
-## Unmerged
+## [v1.2.0] - 2021-08-27
 
 ### Added
-* Kidney volume calculations #32
+* Kidney volume calculations #32 #195
 * Process multiple files at once #30 #194
 * Menu bar with about, help and latest version links #40 #41
 
@@ -12,7 +12,7 @@
 * Post-processing is now off by default to make command line arguments more intuitive i.e. if you want to apply post-processing you add the `-p` flag
 
 ### Fixed
-* CI badge
+* CI badge now from GitHub action rather than travis
 * Download links in readme
 * Default GUI size (now doesn't start with a scroll bar)
 * New releases aren't pre-releases by default any more

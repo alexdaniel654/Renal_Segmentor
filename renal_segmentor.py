@@ -234,7 +234,7 @@ if len(sys.argv) >= 2:
                 'name': 'Renal Segmentor',
                 'description': 'Automatically segment the kidneys from MRI '
                                'data.',
-                'version': '1.1.0',
+                'version': '1.2.0',
                 'copyright': '2021',
                 'website': 'https://github.com/alexdaniel654/Renal_Segmentor',
                 'developer': 'https://www.researchgate.net/profile/'
