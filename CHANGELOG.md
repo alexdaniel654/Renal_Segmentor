@@ -1,7 +1,6 @@
 # Changelog
 
-
-## [v1.2.0] - 2021-08-27
+## [1.2.0] - 2021-08-27
 
 ### Added
 * Kidney volume calculations #32 #195
