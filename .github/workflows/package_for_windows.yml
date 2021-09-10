@@ -28,7 +28,8 @@ jobs:
           wget -O renal_segmentor.model https://zenodo.org/record/4894406/files/whole_kidney_cnn.model
           cd ..
       - name: Run PyInstaller
-        run: pyinstaller renal_segmentor.spec --additional-hooks-dir=hooks
+        run: |
+          pyinstaller renal_segmentor.spec --additional-hooks-dir=hooks
       - name: Upload executible
       - uses: actions/upload-artifact@v2
         with:
