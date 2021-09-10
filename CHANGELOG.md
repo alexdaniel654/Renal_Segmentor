@@ -1,7 +1,12 @@
 # Changelog
 
+## [1.3.0-rc.1] - 2021-09-10
 
-## Unmerged
+### Added
+* Automatic windows binary generation
+
+
+## [1.2.0] - 2021-08-27
 
 ### Added
 * Kidney volume calculations #32

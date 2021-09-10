@@ -33,8 +33,16 @@ jobs:
           cd ..
       - name: Run PyInstaller
         run: pyinstaller renal_segmentor.spec --additional-hooks-dir=hooks
-      - name: Upload executible
+      - name: Upload binaries to action
         uses: actions/upload-artifact@v2
         with:
           name: renal_segmentor.exe
           path: dist
+      - name: Upload binaries to release
+        if: ${{ github.event_name == 'tags'}}
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: dist renal_segmentor.exe
+          asset_name: renal_segmentor.exe
+          tag: ${{ github.ref }}
