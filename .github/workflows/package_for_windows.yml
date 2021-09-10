@@ -1,0 +1,36 @@
+name: Generate windows executible on new release
+
+# Controls when the action will run.
+on:
+  push:
+    tags:
+    - 'v*'
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          mkdir -p models
+          cd models
+          wget -O renal_segmentor.model https://zenodo.org/record/4894406/files/whole_kidney_cnn.model
+          cd ..
+      - name: Run PyInstaller
+        run: pyinstaller renal_segmentor.spec --additional-hooks-dir=hooks
+      - name: Upload executible
+      - uses: actions/upload-artifact@v2
+        with:
+          name: renal_segmentor.exe
+          path: dist
