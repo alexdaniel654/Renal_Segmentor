@@ -5,32 +5,11 @@ on:
   push:
     tags:
     - 'v*'
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  release:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-      - name: Release
-        uses: docker://antonyurchenko/git-release:v4
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DRAFT_RELEASE: "true"
-          PRE_RELEASE: "true"
-          CHANGELOG_FILE: "CHANGELOG.md"
-          ALLOW_EMPTY_CHANGELOG: "false"
 
   windows_package:
     runs-on: windows-2019
-
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.8
@@ -59,10 +38,10 @@ jobs:
           file: dist/renal_segmentor.exe
           asset_name: renal_segmentor.exe
           tag: ${{ github.ref }}
+          prerelease: true
 
   osx_package:
     runs-on: macos-10.15
-
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.8
@@ -91,10 +70,10 @@ jobs:
           file: dist/renal_segmentor.app
           asset_name: renal_segmentor.app
           tag: ${{ github.ref }}
+          prerelease: true
 
   ubuntu_package:
     runs-on: ubuntu-20.04
-
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.8
@@ -126,3 +105,18 @@ jobs:
           file: dist/renal_segmentor
           asset_name: renal_segmentor
           tag: ${{ github.ref }}
+          prerelease: true
+
+  release:
+    needs: [windows_package, osx_package, ubuntu_package]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Release
+        uses: docker://antonyurchenko/git-release:v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DRAFT_RELEASE: "true"
+          PRE_RELEASE: "false"
+          CHANGELOG_FILE: "CHANGELOG.md"
+          ALLOW_EMPTY_CHANGELOG: "false"
