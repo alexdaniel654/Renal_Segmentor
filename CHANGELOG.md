@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.3.0-rc.2] - 2021-09-20
+
+### Added
+* Automatic windows binary generation
+
+
 ## [1.3.0-rc.1] - 2021-09-10
 
 ### Added
