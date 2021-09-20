@@ -29,7 +29,7 @@ jobs:
           ALLOW_EMPTY_CHANGELOG: "false"
 
   windows_package:
-    runs-on: windows-latest
+    runs-on: windows-2019
 
     steps:
       - uses: actions/checkout@v2
@@ -53,10 +53,73 @@ jobs:
           name: renal_segmentor.exe
           path: dist
       - name: Upload binaries to release
-        if: ${{ github.event_name == 'tags'}}
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: dist renal_segmentor.exe
           asset_name: renal_segmentor.exe
+          tag: ${{ github.ref }}
+
+  osx_package:
+    runs-on: macos-10.15
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          mkdir models
+          cd models
+          wget -o renal_segmentor.model https://zenodo.org/record/4894406/files/whole_kidney_cnn.model
+          cd ..
+      - name: Run PyInstaller
+        run: pyinstaller renal_segmentor.spec --additional-hooks-dir=hooks --windowed
+      - name: Upload binaries to action
+        uses: actions/upload-artifact@v2
+        with:
+          name: renal_segmentor.app
+          path: dist
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: dist renal_segmentor.app
+          asset_name: renal_segmentor.app
+          tag: ${{ github.ref }}
+
+  ubuntu_package:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          mkdir models
+          cd models
+          wget -o renal_segmentor.model https://zenodo.org/record/4894406/files/whole_kidney_cnn.model
+          cd ..
+      - name: Run PyInstaller
+        run: pyinstaller renal_segmentor.spec --additional-hooks-dir=hooks --windowed
+      - name: Upload binaries to action
+        uses: actions/upload-artifact@v2
+        with:
+          name: renal_segmentor
+          path: dist
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: dist renal_segmentor
+          asset_name: renal_segmentor
           tag: ${{ github.ref }}
