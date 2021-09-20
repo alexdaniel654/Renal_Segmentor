@@ -5,7 +5,7 @@ gooey_languages = Tree(os.path.join(gooey_root, 'languages'),
                        prefix='gooey/languages')
 gooey_images = Tree(os.path.join(gooey_root, 'images'),
                     prefix='gooey/images')
-custom_images = Tree('.\\images',
+custom_images = Tree('images',
                      prefix='images')
 block_cipher = None
 

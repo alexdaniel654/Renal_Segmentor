@@ -24,7 +24,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DRAFT_RELEASE: "true"
-          PRE_RELEASE: "false"
+          PRE_RELEASE: "true"
           CHANGELOG_FILE: "CHANGELOG.md"
           ALLOW_EMPTY_CHANGELOG: "false"
 
@@ -56,7 +56,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: dist renal_segmentor.exe
+          file: dist/renal_segmentor.exe
           asset_name: renal_segmentor.exe
           tag: ${{ github.ref }}
 
@@ -88,7 +88,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: dist renal_segmentor.app
+          file: dist/renal_segmentor.app
           asset_name: renal_segmentor.app
           tag: ${{ github.ref }}
 
@@ -104,10 +104,13 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
+          pip install wheel
+          sudo apt-get update
+          sudo apt-get install git curl libsdl2-mixer-2.0-0 libsdl2-image-2.0-0 libsdl2-2.0-0 build-essential libgtk-3-dev
           pip install -r requirements.txt
-          mkdir models
+          mkdir -p models
           cd models
-          wget -o renal_segmentor.model https://zenodo.org/record/4894406/files/whole_kidney_cnn.model
+          wget -O renal_segmentor.model https://zenodo.org/record/4894406/files/whole_kidney_cnn.model
           cd ..
       - name: Run PyInstaller
         run: pyinstaller renal_segmentor.spec --additional-hooks-dir=hooks --windowed
@@ -120,6 +123,6 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: dist renal_segmentor
+          file: dist/renal_segmentor
           asset_name: renal_segmentor
           tag: ${{ github.ref }}
