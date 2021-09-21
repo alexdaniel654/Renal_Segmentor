@@ -36,6 +36,7 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: dist/renal_segmentor.exe
+          asset_name: renal_segmentor_windows.exe
           tag: ${{ github.ref }}
           prerelease: true
 
@@ -67,7 +68,7 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: dist/renal_segmentor
-          asset_name: renal_segmentor.app
+          asset_name: renal_segmentor_macos
           tag: ${{ github.ref }}
           prerelease: true
 
@@ -102,8 +103,8 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: dist/renal_segmentor*
-          file_glob: true
+          file: dist/renal_segmentor
+          asset_name: renal_segmentor_ubuntu
           tag: ${{ github.ref }}
           prerelease: true
 
