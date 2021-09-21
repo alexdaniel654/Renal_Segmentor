@@ -35,8 +35,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: dist/renal_segmentor*
-          file_glob: true
+          file: dist/renal_segmentor.exe
           tag: ${{ github.ref }}
           prerelease: true
 
@@ -58,11 +57,12 @@ jobs:
           cd ..
       - name: Run PyInstaller
         run: pyinstaller renal_segmentor.spec --additional-hooks-dir=hooks --windowed
-      - name: Upload binaries to action
-        uses: actions/upload-artifact@v2
-        with:
-          name: renal_segmentor.app
-          path: dist
+      - name: List files
+        run: |
+          echo "Dist contains"
+          ls - al dist
+          echo "Build contains"
+          ls -al build
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2
         with:
@@ -71,6 +71,11 @@ jobs:
           file_glob: true
           tag: ${{ github.ref }}
           prerelease: true
+      - name: Upload binaries to action
+        uses: actions/upload-artifact@v2
+        with:
+          name: renal_segmentor.app
+          path: dist
 
   ubuntu_package:
     runs-on: ubuntu-20.04
