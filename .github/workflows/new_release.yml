@@ -57,6 +57,11 @@ jobs:
           cd ..
       - name: Run PyInstaller
         run: pyinstaller renal_segmentor.spec --additional-hooks-dir=hooks --windowed
+      - name: Upload binaries to action
+        uses: actions/upload-artifact@v2
+        with:
+          name: renal_segmentor.app
+          path: dist
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2
         with:
@@ -65,11 +70,7 @@ jobs:
           asset_name: renal_segmentor.app
           tag: ${{ github.ref }}
           prerelease: true
-      - name: Upload binaries to action
-        uses: actions/upload-artifact@v2
-        with:
-          name: renal_segmentor.app
-          path: dist
+
 
   ubuntu_package:
     runs-on: ubuntu-20.04
