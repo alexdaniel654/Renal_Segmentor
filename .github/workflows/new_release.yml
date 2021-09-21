@@ -61,7 +61,8 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: dist/renal_segmentor.app
+          file: dist/renal_segmentor
+          asset_name: renal_segmentor.app
           tag: ${{ github.ref }}
           prerelease: true
       - name: Upload binaries to action

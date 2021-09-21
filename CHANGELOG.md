@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.3.0-rc.8] - 2021-09-21
+
+### Added
+* Automatic windows, mac and linux binary generation
+
+
 ## [1.3.0-rc.7] - 2021-09-21
 
 ### Added
