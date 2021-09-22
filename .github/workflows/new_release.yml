@@ -7,6 +7,18 @@ on:
     - 'v*'
 
 jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Release
+        uses: docker://antonyurchenko/git-release:v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DRAFT_RELEASE: "true"
+          PRE_RELEASE: "false"
+          CHANGELOG_FILE: "CHANGELOG.md"
+          ALLOW_EMPTY_CHANGELOG: "false"
 
   windows_package:
     runs-on: windows-2019
@@ -63,12 +75,15 @@ jobs:
         with:
           name: renal_segmentor.app
           path: dist
+      - name: Compress binaries
+        run: |
+          zip -r dist/renal_segmentor.zip dist/renal_segmentor.app
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: dist/renal_segmentor
-          asset_name: renal_segmentor_macos
+          file: dist/renal_segmentor.zip
+          asset_name: renal_segmentor_macos.zip
           tag: ${{ github.ref }}
           prerelease: true
 
@@ -107,17 +122,3 @@ jobs:
           asset_name: renal_segmentor_ubuntu
           tag: ${{ github.ref }}
           prerelease: true
-
-  release:
-    needs: [windows_package, osx_package, ubuntu_package]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Release
-        uses: docker://antonyurchenko/git-release:v4
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DRAFT_RELEASE: "true"
-          PRE_RELEASE: "false"
-          CHANGELOG_FILE: "CHANGELOG.md"
-          ALLOW_EMPTY_CHANGELOG: "false"
