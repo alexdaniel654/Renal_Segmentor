@@ -7,19 +7,6 @@ on:
     - 'v*'
 
 jobs:
-  release:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Release
-        uses: docker://antonyurchenko/git-release:v4
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DRAFT_RELEASE: "true"
-          PRE_RELEASE: "false"
-          CHANGELOG_FILE: "CHANGELOG.md"
-          ALLOW_EMPTY_CHANGELOG: "false"
-
   windows_package:
     runs-on: windows-2019
     steps:
@@ -43,16 +30,8 @@ jobs:
         with:
           name: renal_segmentor.exe
           path: dist
-      - name: Upload binaries to release
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: dist/renal_segmentor.exe
-          asset_name: renal_segmentor_windows.exe
-          tag: ${{ github.ref }}
-          prerelease: true
 
-  osx_package:
+  macos_package:
     runs-on: macos-10.15
     steps:
       - uses: actions/checkout@v2
@@ -75,17 +54,6 @@ jobs:
         with:
           name: renal_segmentor.app
           path: dist
-      - name: Compress binaries
-        run: |
-          zip -r dist/renal_segmentor.zip . -i dist/renal_segmentor.app
-      - name: Upload binaries to release
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: dist/renal_segmentor.zip
-          asset_name: renal_segmentor_macos.zip
-          tag: ${{ github.ref }}
-          prerelease: true
 
 
   ubuntu_package:
@@ -114,11 +82,25 @@ jobs:
         with:
           name: renal_segmentor
           path: dist
-      - name: Upload binaries to release
-        uses: svenstaro/upload-release-action@v2
+
+  release:
+    needs: [windows_package, macos_package, ubuntu_package]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download Artifacts
+        uses: actions/download-artifact@v2
+      - name: Display structure of downloaded files
+        run: ls -R
+      - name: Release
+        uses: docker://antonyurchenko/git-release:v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DRAFT_RELEASE: "true"
+          PRE_RELEASE: "false"
+          CHANGELOG_FILE: "CHANGELOG.md"
+          ALLOW_EMPTY_CHANGELOG: "false"
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: dist/renal_segmentor
-          asset_name: renal_segmentor_ubuntu
-          tag: ${{ github.ref }}
-          prerelease: true
+          args: |
+            renal_segmentor.exe
+            renal_segmentor.app
