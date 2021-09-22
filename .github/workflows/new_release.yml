@@ -77,7 +77,7 @@ jobs:
           path: dist
       - name: Compress binaries
         run: |
-          zip -r dist/renal_segmentor.zip dist/renal_segmentor.app
+          zip -r dist/renal_segmentor.zip . -i dist/renal_segmentor.app
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2
         with:
