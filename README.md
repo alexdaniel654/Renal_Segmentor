@@ -20,7 +20,7 @@ An application to segment kidneys from renal MRI data using a convolutional neur
 7. If you would like a `.csv` file containing the Total Kidney Volume (TKV), Left Kidney Volume (LKV) and Right Kidney Volume (RKV) for each image that was segmented tick the `Export Kidney Volumes` box.
 8. The masks are output from the segmentor as `.nii.gz` with `_mask` added to the original file name e.g. the mask of `sub_01.PAR` is `sub_01_mask.nii.gz`. By default, the mask is output to the same place as the raw data, if you would like the masks to be output to a different directory click `Browse` under `Output Directory` and select the folder you wish the masks to go to.
 9. Click start.
-10. The application will run and a few seconds later a box will appear saying the program completed successfully. 
+10. The application will run and a few seconds later a box will appear saying the program completed successfully. The first time you run a segmentation will take a little longer as the latest algorithm weights are downloaded from the internet at this point.
 11. If you want to segment some more data click the `edit` button on the bottom of the finished screen, if you're done, click `close`.
 
 ![Interface](images/screenshot.png)

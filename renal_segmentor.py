@@ -144,7 +144,7 @@ def main():
 
     parser = get_parser()
     args = parser.parse_args()
-    weights_path = resource_path(fetch.Weights().path)
+    weights_path = fetch.Weights().path
     # Import data
     volumes = pd.DataFrame(index=args.input, columns=['tkv', 'lkv', 'rkv'])
     n = 0

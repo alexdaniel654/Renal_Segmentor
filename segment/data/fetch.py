@@ -39,23 +39,26 @@ class Sub2:
 
 class Weights:
     def __init__(self):
+        expected_weights_hash = 'e9f60f9fe6ad9eced8b055bf6792a1d1'
         self.target_file = os.path.join(segment_home, 'renal_segmentor.model')
         already_exists = os.path.isfile(self.target_file)
         if not already_exists:
             wget.download('https://zenodo.org/record/4894406/files'
                           '/whole_kidney_cnn.model?download=1',
                           self.target_file)
-        self._check_hash('e9f60f9fe6ad9eced8b055bf6792a1d1')
+        self._check_hash(expected_weights_hash)
         self.path = self.target_file
+        self.dir = segment_home
 
     def _check_hash(self, expected_hash):
         test_hash = self._get_file_md5(self.target_file)
         if test_hash != expected_hash:
             warnings.warn(f'The weigths in {segment_home} do not match the '
-                          f'expected weights, downloading remote weights.')
-            wget.download('https://zenodo.org/record/4894406/files'
-                          '/whole_kidney_cnn.model?download=1',
-                          self.target_file)
+                          f'weights expected by this version of '
+                          f'renal_segmentor. This could mean a new version '
+                          f'of the weights is available and therefore you '
+                          f'should also update renal_segmentor or that there '
+                          f'was an error when downloading the weights')
 
     @staticmethod
     def _get_file_md5(filename):
