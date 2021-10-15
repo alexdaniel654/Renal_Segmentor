@@ -4,11 +4,16 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![DOI](https://zenodo.org/badge/236753300.svg)](https://zenodo.org/badge/latestdoi/236753300)
 
-An application to segment kidneys from renal MRI data using a convolutional neural network (CNN).
+An application and Python package to segment kidneys from renal MRI data using a convolutional neural network (CNN).
 
 <h2 align="center"><img src="images/banner.png" height="128"></h2>
 
-## Using the segmentor from an executable
+## Using the segmentor
+
+The easiest way to make use of the segmentor is to download the windows executable, this allows you to mask data with a stand-alone application. The executable can either be run as a GUI or a command line application allowing it to be integrated into bash scripts.
+
+Alternatively, the methods used by the segmentor are available as a Python package and can be integrated into existing Python pipelines. Instructions for making use of the segmentor via each method are given below.
+
 ### As a Graphical User Interface (GUI)
 
 1. Download the [latest release](https://github.com/alexdaniel654/Renal_Segmentor/releases/latest/download/renal_segmentor.exe)
@@ -28,6 +33,17 @@ An application to segment kidneys from renal MRI data using a convolutional neur
 ### Via a Command Line Interface (CLI)
 1. Download the [latest release](https://github.com/alexdaniel654/Renal_Segmentor/releases/latest/download/renal_segmentor.exe)
 2. Run the `renal_segmentor.exe -h` to generate a list of available parameters. The application runs via a command line if any input arguments are specified, if not, it opens as a GUI.
+
+### As a Python package
+1. Activate the python environment you want to install the package on and run `pip install renal_segmentor`.
+2. The example code snippet below will generate a mask of `T2w.nii.gz` as a numpy array and print the TKV to the terminal.
+
+```python
+from segmentor import Tkv
+segmentation = Tkv('T2w.nii.gz')
+mask = segmentation.get_mask()
+print(f'Total Kidney Volume = {segmentation.tkv:.2f} ml')
+```
 
 ## Citing Renal Segmentor
 If you have made use of renal segmentor for your work, please cite Daniel AJ, _et al_. Automated renal segmentation in healthy and chronic kidney disease subjects using a convolutional neural network. Magnetic Resonance in Medicine 2021;86:1125–1136 doi: [https://doi.org/10.1002/mrm.28768](https://doi.org/10.1002/mrm.28768). Alternatively if you wish to cite a specific software version, each release has an individual DOI on Zenodo, the DOI for the latest release can be [found here](https://doi.org/10.5281/zenodo.4068850).
