@@ -174,8 +174,8 @@ def main():
         nib.save(mask_img, mask_fname)
 
         if args.raw:
-            nib.save(segmentation.img, os.path.join(out_dir, segmentation.base
-                                                    + '.nii.gz'))
+            nib.save(segmentation._img, os.path.join(out_dir, segmentation.base
+                                                     + '.nii.gz'))
 
         print(f'Processed {n} of {len(volumes)} files')
 

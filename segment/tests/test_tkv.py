@@ -94,7 +94,6 @@ class TestRawData:
         directory = os.path.dirname(path)
         base = os.path.splitext(os.path.basename(path))[0]
         raw_data = Tkv(path)
-        prediction = raw_data.get_mask()
 
         # Default name
         raw_data.mask_to_nifti()

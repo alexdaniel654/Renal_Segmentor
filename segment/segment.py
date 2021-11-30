@@ -50,7 +50,7 @@ class Tkv:
         self.zoom = self._img.header.get_zooms()
         self.orientation = nib.orientations.aff2axcodes(self.affine)
 
-    def get_mask(self, weights_path=None, post_process=True):
+    def get_mask(self, weights_path=None, post_process=True, inplace=False):
         if weights_path is None:
             weights_path = fetch.Weights().path
         img = conform(self._img, out_shape=(240, 240, self.shape[-1]),
@@ -90,11 +90,18 @@ class Tkv:
                     np.prod(self.zoom))/1000
         self.rkv = (np.sum(self.mask[:120] > 0.5) *
                     np.prod(self.zoom)) / 1000
-        return self.mask
+
+        if not inplace:
+            return self.mask
 
     def mask_to_nifti(self, path=None):
         if path is None:
             path = os.path.join(self.directory, self.base + '_mask.nii.gz')
+
+        # Generate the mask if that hasn't already been done
+        if type(self._mask_img) is type:
+            self.get_mask(inplace=True)
+
         nib.save(self._mask_img, path)
 
     def data_to_nifti(self, path=None):
