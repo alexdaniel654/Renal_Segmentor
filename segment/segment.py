@@ -3,6 +3,7 @@ import numpy as np
 import os
 
 from nibabel.processing import conform
+from segment.data import fetch
 from skimage.measure import label, regionprops
 from skimage.transform import resize
 from tensorflow.keras import backend as K
@@ -14,38 +15,45 @@ from tensorflow.keras.models import load_model
 class Tkv:
     def __init__(self, path):
         self.path = path
-        self.__split_path__()
-        self.img = nib.Nifti1Image
+        self.directory, self.base, self.extension = self._split_path(self.path)
+        self._img = nib.Nifti1Image
         self.data = np.array
         self.mask = np.array
+        self._mask_img = nib.Nifti1Image
         self.affine = np.array
         self.shape = tuple
         self.zoom = tuple
+        self.orientation = None
         self.tkv = np.nan
         self.lkv = np.nan
         self.rkv = np.nan
+        self._load_data()
 
-    def __split_path__(self):
-        self.directory = os.path.dirname(self.path)
-        self.base = os.path.splitext(os.path.basename(self.path))[0]
-        self.extension = os.path.splitext(os.path.basename(self.path))[1]
-        if self.extension == '.gz' and self.base[-4:] == '.nii':
-            self.extension = '.nii.gz'
-            self.base = self.base[:-4]
+    @staticmethod
+    def _split_path(path):
+        directory = os.path.dirname(path)
+        base = os.path.splitext(os.path.basename(path))[0]
+        extension = os.path.splitext(os.path.basename(path))[1]
+        if extension == '.gz' and base[-4:] == '.nii':
+            extension = '.nii.gz'
+            base = base[:-4]
+        return directory, base, extension
 
-    def load(self):
+    def _load_data(self):
         if self.extension == '.PAR':
-            self.img = nib.load(self.path, scaling='fp')
+            self._img = nib.load(self.path, scaling='fp')
         else:
-            self.img = nib.load(self.path)
-        self.data = self.img.get_fdata()
-        self.affine = self.img.affine
-        self.shape = self.img.shape
-        self.zoom = self.img.header.get_zooms()
+            self._img = nib.load(self.path)
+        self.data = self._img.get_fdata()
+        self.affine = self._img.affine
+        self.shape = self._img.shape
+        self.zoom = self._img.header.get_zooms()
         self.orientation = nib.orientations.aff2axcodes(self.affine)
 
-    def get_mask(self, weights_path, post_process=True):
-        img = conform(self.img, out_shape=(240, 240, self.shape[-1]),
+    def get_mask(self, weights_path=None, post_process=True):
+        if weights_path is None:
+            weights_path = fetch.Weights().path
+        img = conform(self._img, out_shape=(240, 240, self.shape[-1]),
                       voxel_size=(1.458, 1.458, self.zoom[-1] * 0.998),
                       orientation='LIP')
         data = img.get_fdata()
@@ -70,9 +78,12 @@ class Tkv:
             cleaned_mask = self._cleanup(mask > 0.05)
             mask[cleaned_mask < 0.5] = 0.0
         mask_img = nib.Nifti1Image(mask, img.affine)
-        mask_img = conform(mask_img, out_shape=self.shape,
-                           voxel_size=self.zoom, orientation=self.orientation)
-        self.mask = self._rescale(mask_img.get_fdata(), 0, 1)
+        self._mask_img = conform(mask_img,
+                                 out_shape=self.shape,
+                                 voxel_size=self.zoom,
+                                 orientation=self.orientation)
+        self.mask = self._rescale(self._mask_img.get_fdata(), 0, 1)
+        self._mask_img = nib.Nifti1Image(self.mask, self._mask_img.affine)
         self.tkv = (np.sum(self.mask > 0.5) *
                     np.prod(self.zoom))/1000
         self.lkv = (np.sum(self.mask[120:] > 0.5) *
@@ -80,6 +91,16 @@ class Tkv:
         self.rkv = (np.sum(self.mask[:120] > 0.5) *
                     np.prod(self.zoom)) / 1000
         return self.mask
+
+    def mask_to_nifti(self, path=None):
+        if path is None:
+            path = os.path.join(self.directory, self.base + '_mask.nii.gz')
+        nib.save(self._mask_img, path)
+
+    def data_to_nifti(self, path=None):
+        if path is None:
+            path = os.path.join(self.path, self.base + '.nii.gz')
+        nib.save(self._img, path)
 
     @staticmethod
     def _rescale(data, black=None, white=None):

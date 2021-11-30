@@ -7,8 +7,6 @@ from segment import Tkv
 from segment.data import fetch
 from .utils import image_stats, same_image
 
-if os.path.exists('test_output'):
-    shutil.rmtree('test_output')
 
 class TestRawData:
     @pytest.mark.parametrize('path, expected', [
@@ -39,7 +37,6 @@ class TestRawData:
     ])
     def test_load(self, path, expected):
         raw_data = Tkv(path)
-        raw_data.load()
         stats = image_stats(raw_data.data)
         same_image(stats, expected)
 
@@ -61,10 +58,10 @@ class TestRawData:
         ('./foo/bar.nii.gz', ['./foo', 'bar', '.nii.gz'])
     ])
     def test_split_path(self, path, expected):
-        raw_data = Tkv(path)
-        assert raw_data.directory == expected[0]
-        assert raw_data.base == expected[1]
-        assert raw_data.extension == expected[2]
+        directory, base, extension = Tkv._split_path(path)
+        assert directory == expected[0]
+        assert base == expected[1]
+        assert extension == expected[2]
 
     @pytest.mark.parametrize('path, expected, expected_cleaned', [
         (fetch.Sub1('PAR').path,
@@ -82,10 +79,62 @@ class TestRawData:
     ])
     def test_get_mask(self, path, expected, expected_cleaned):
         raw_data = Tkv(path)
-        raw_data.load()
-        prediction = raw_data.get_mask(weights_path=fetch.Weights().path,
-                                       post_process=False)
-        prediction_cleaned = raw_data.get_mask(weights_path=fetch.Weights().path,
-                                               post_process=True)
+        prediction = raw_data.get_mask(post_process=False)
+        prediction_cleaned = raw_data.get_mask(post_process=True)
         same_image(prediction, expected)
         same_image(prediction_cleaned, expected_cleaned)
+
+    @pytest.mark.parametrize('path, expected', [
+        (fetch.Sub1('PAR').path,
+         [0.040212, 0.193889, 1.0, 0.0, 13.0, 0.0]),
+        (fetch.Sub2('PAR').path,
+         [0.018423, 0.131926, 1.0, 0.0, 17.0, 0.0])
+    ])
+    def test_mask_to_nifti(self, path, expected):
+        directory = os.path.dirname(path)
+        base = os.path.splitext(os.path.basename(path))[0]
+        raw_data = Tkv(path)
+        prediction = raw_data.get_mask()
+
+        # Default name
+        raw_data.mask_to_nifti()
+        output_files = os.listdir(directory)
+        expected_output = base + '_mask.nii.gz'
+        assert expected_output in output_files
+        saved_data = nib.load(path[:-4] + '_mask.nii.gz').get_fdata()
+        same_image(saved_data, expected)
+        os.remove(path[:-4] + '_mask.nii.gz')
+
+        # Custom name
+        raw_data.mask_to_nifti(os.path.join(directory,
+                                            base + '_automated_mask.nii.gz'))
+        output_files = os.listdir(directory)
+        assert base + '_automated_mask.nii.gz' in output_files
+        saved_data = nib.load(
+            os.path.join(directory,
+                         base + '_automated_mask.nii.gz')).get_fdata()
+        same_image(saved_data, expected)
+        os.remove(os.path.join(directory, base + '_automated_mask.nii.gz'))
+
+    @pytest.mark.parametrize('path, expected', [
+        (fetch.Sub1('PAR').path,
+         [1.558641e+04, 1.231441e+04, 9.509475e+04, 0.000000e+00,
+         1.300000e+01, 1.851950e+06]),
+        (fetch.Sub2('PAR').path,
+         [9.148663e+03, 1.237674e+04, 1.338610e+05, 0.000000e+00,
+          1.700000e+01, 1.591044e+06])
+    ])
+    def test_image_to_nifti(self, path, expected):
+        directory = os.path.dirname(path)
+        base = os.path.splitext(os.path.basename(path))[0]
+        raw_data = Tkv(path)
+        # Custom name (avoids overwriting existing data)
+        raw_data.data_to_nifti(os.path.join(directory,
+                                            base + '_raw_data.nii.gz'))
+        output_files = os.listdir(directory)
+        assert base + '_raw_data.nii.gz' in output_files
+        saved_data = nib.load(
+            os.path.join(directory,
+                         base + '_raw_data.nii.gz')).get_fdata()
+        same_image(saved_data, expected)
+        os.remove(os.path.join(directory, base + '_raw_data.nii.gz'))

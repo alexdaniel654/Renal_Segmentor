@@ -151,7 +151,6 @@ def main():
     for path, row in volumes.iterrows():
         n += 1
         segmentation = Tkv(path)
-        segmentation.load()
 
         mask = segmentation.get_mask(post_process=args.post_process,
                                      weights_path=weights_path)
