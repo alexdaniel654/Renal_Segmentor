@@ -105,5 +105,3 @@ class TestWeights:
 
         # Remove incorrect weights
         os.remove(weights.path)
-
-

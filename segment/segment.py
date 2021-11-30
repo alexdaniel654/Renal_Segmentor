@@ -13,7 +13,52 @@ from tensorflow.keras.models import load_model
 
 
 class Tkv:
+    """
+    A class to generate total kidney masks form T2-weighted images. These
+    are then used to calculate total kidney volume (TKV).
+
+    Attributes
+    ----------
+    mask : np.ndarray
+        The estimated probability that each voxel is renal tissue
+    tkv : np.float64
+        Total kidney volume (in ml)
+    lkv : np.float64
+        Left kidney volume (in ml)
+    rkv : np.float64
+        Right kidney volume (in ml)
+    path : str
+        Full path to the raw data
+    directory : str
+        Directory the raw data is located in
+    data : np.ndarray
+        Numpy array of the raw data
+    affine : np.ndarray
+        A matrix giving the relationship between voxel coordinates and
+        world coordinates.
+    shape : tuple
+        The shape of the input data/output mask
+    zoom : tuple
+        Length of a single voxel along each axis
+    orientation : tuple
+        Radiological direction of each axis e.g. ('L', 'S', 'P') means that
+        increasing in index along the 0 axis is moving towards the left of
+        the body.
+    _img : nib.Nifti1Image
+        Nibabel object of the raw input data
+    _mask_img : nib.Nifti1Image
+        Nibabel object of the output mask
+    """
     def __init__(self, path):
+        """
+        Initialise the Tkv class instance.
+
+        Parameters
+        ----------
+        path : str
+            Path to the input data, can be any data file nibabel is capable
+            of reading.
+        """
         self.path = path
         self.directory, self.base, self.extension = self._split_path(self.path)
         self._img = nib.Nifti1Image
@@ -31,6 +76,10 @@ class Tkv:
 
     @staticmethod
     def _split_path(path):
+        """
+        Split a path to a file into the files directory, file name and file
+        extension.
+        """
         directory = os.path.dirname(path)
         base = os.path.splitext(os.path.basename(path))[0]
         extension = os.path.splitext(os.path.basename(path))[1]
@@ -40,6 +89,10 @@ class Tkv:
         return directory, base, extension
 
     def _load_data(self):
+        """
+        Load raw data into the class. Loads Philips PAR/REC in floating
+        point mode.
+        """
         if self.extension == '.PAR':
             self._img = nib.load(self.path, scaling='fp')
         else:
@@ -51,6 +104,31 @@ class Tkv:
         self.orientation = nib.orientations.aff2axcodes(self.affine)
 
     def get_mask(self, weights_path=None, post_process=True, inplace=False):
+        """
+        Estimate a mask from the provided input data.
+
+        Parameters
+        ----------
+        weights_path : str, optional
+            Path to custom neural network weights. Defaults ot segment home
+            and will download latest weights if nothing is specified.
+        post_process : bool, optional
+            Default True
+            Keep only the two largest connected volumes in the mask. Note
+            this may cause issue with subjects that have more or less than
+            two kidneys.
+        inplace : bool, optional
+            Default False
+            If true, no numpy array of the mask will be returned, instead
+            only the mask attributes in the class will be updated. Can be
+            useful if only kidney volumes are desired rather than the voxel
+            by voxel masks.
+
+        Returns
+        -------
+        mask : np.ndarray, optional
+            The estimated probability that each voxel is renal tissue
+        """
         if weights_path is None:
             weights_path = fetch.Weights().path
         img = conform(self._img, out_shape=(240, 240, self.shape[-1]),
@@ -95,6 +173,14 @@ class Tkv:
             return self.mask
 
     def mask_to_nifti(self, path=None):
+        """
+        Save the estimated mask as a nifti file.
+        Parameters
+        ----------
+        path : str, optional
+            Path to the folder where the nifti file will be saved. Default
+            is the same as the raw data, with _mask appended to the filename.
+        """
         if path is None:
             path = os.path.join(self.directory, self.base + '_mask.nii.gz')
 
@@ -105,12 +191,26 @@ class Tkv:
         nib.save(self._mask_img, path)
 
     def data_to_nifti(self, path=None):
+        """
+        Save the raw data as a nifti file.
+        Parameters
+        ----------
+        path : str, optional
+            Path to the folder where the nifti file will be saved. Default
+            is the same as the raw data.
+        """
         if path is None:
             path = os.path.join(self.path, self.base + '.nii.gz')
         nib.save(self._img, path)
 
     @staticmethod
     def _rescale(data, black=None, white=None):
+        """
+        Rescaled the intensity of a image so that the value of black is 0 and
+        the value of white is 1. If black and white values aren't specified,
+        they are set to half a standard deviation below the mean and four
+        standard deviations above the mean respectively.
+        """
         if black is None:
             black = np.mean(data) - 0.5 * np.std(data)
             if black < data.min():
@@ -125,6 +225,9 @@ class Tkv:
 
     @staticmethod
     def _cleanup(mask):
+        """
+        Removes all but the two largest connected areas in the mask.
+        """
         clean_mask = np.zeros(mask.shape, dtype=np.uint8)
         label_mask = label(mask > 0.5, connectivity=1)
         props = regionprops(label_mask)

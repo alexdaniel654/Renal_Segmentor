@@ -19,6 +19,7 @@ from segment.data import fetch
 
 # Define Functions
 
+
 def get_parser():
     # Make argparser
     parser = GooeyParser(description='Segment renal MRI images.')
