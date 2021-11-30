@@ -1,7 +1,7 @@
 import nibabel as nib
+import numpy as np
 import os
 import pytest
-import shutil
 
 from segment import Tkv
 from segment.data import fetch
@@ -63,26 +63,31 @@ class TestRawData:
         assert base == expected[1]
         assert extension == expected[2]
 
-    @pytest.mark.parametrize('path, expected, expected_cleaned', [
+    @pytest.mark.parametrize('path, expected, expected_cleaned, tkv_cleaned', [
         (fetch.Sub1('PAR').path,
          [0.040264, 0.19392, 1.0,  0.0, 13.0, 0.0],
-         [0.040212, 0.193889, 1.0, 0.0, 13.0, 0.0]),
+         [0.040212, 0.193889, 1.0, 0.0, 13.0, 0.0],
+         352.65681),
         (fetch.Sub1('nii.gz').path,
          [0.040264, 0.19392, 1.0,  0.0, 13.0, 0.0],
-         [0.040212, 0.193889, 1.0, 0.0, 13.0, 0.0]),
+         [0.040212, 0.193889, 1.0, 0.0, 13.0, 0.0],
+         352.55157),
         (fetch.Sub2('PAR').path,
          [0.018649, 0.13261, 1.0, 0.0, 17.0, 0.0],
-         [0.018423, 0.131926, 1.0, 0.0, 17.0, 0.0]),
+         [0.018423, 0.131926, 1.0, 0.0, 17.0, 0.0],
+         253.87312),
         (fetch.Sub2('nii.gz').path,
          [0.018649, 0.13261, 1.0, 0.0, 17.0, 0.0],
-         [0.018423, 0.131926, 1.0, 0.0, 17.0, 0.0]),
+         [0.018423, 0.131926, 1.0, 0.0, 17.0, 0.0],
+         253.87313),
     ])
-    def test_get_mask(self, path, expected, expected_cleaned):
+    def test_get_mask(self, path, expected, expected_cleaned, tkv_cleaned):
         raw_data = Tkv(path)
         prediction = raw_data.get_mask(post_process=False)
         prediction_cleaned = raw_data.get_mask(post_process=True)
         same_image(prediction, expected)
         same_image(prediction_cleaned, expected_cleaned)
+        np.isclose(raw_data.tkv, tkv_cleaned)
 
     @pytest.mark.parametrize('path, expected', [
         (fetch.Sub1('PAR').path,
