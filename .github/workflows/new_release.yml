@@ -30,12 +30,16 @@ jobs:
         with:
           name: renal_segmentor.exe
           path: dist/renal_segmentor.exe
+      - name: Display structure of downloaded files
+        run: ls -R
 
   release:
     needs: [windows_package]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Display structure of downloaded files
+        run: ls -R
       - name: Download Artifacts
         uses: actions/download-artifact@v2
       - name: Display structure of downloaded files
@@ -50,7 +54,7 @@ jobs:
           ALLOW_EMPTY_CHANGELOG: "false"
         with:
           args: |
-            renal_segmentor.exe
+            renal_segmentor.exe/renal_segmentor.exe
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:

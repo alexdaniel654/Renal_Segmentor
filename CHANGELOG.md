@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.3.0-rc.14] - 2021-12-01
+## [1.3.0-rc.15] - 2021-12-01
 
 ### Added
 * Segmentation is now a standalone pip package
