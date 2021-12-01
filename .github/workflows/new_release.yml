@@ -30,20 +30,14 @@ jobs:
         with:
           name: windows_binary
           path: dist/renal_segmentor.exe
-      - name: Display structure of downloaded files
-        run: ls -R
 
   release:
     needs: [windows_package]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Display structure of downloaded files
-        run: ls -R
       - name: Download Artifacts
         uses: actions/download-artifact@v2
-      - name: Display structure of downloaded files
-        run: ls -R
       - name: Release
         uses: docker://antonyurchenko/git-release:v4
         env:
@@ -71,7 +65,7 @@ jobs:
         with:
           password: ${{ secrets.PYPI_TEST_API_TOKEN }}
           repository_url: https://test.pypi.org/legacy/
-#      - name: Publish distribution to PyPI
-#        uses: pypa/gh-action-pypi-publish@release/v1
-#        with:
-#          password: ${{ secrets.PYPI_API_TOKEN }}
+      - name: Publish distribution to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
