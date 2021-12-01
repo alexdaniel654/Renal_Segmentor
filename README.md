@@ -35,7 +35,7 @@ Alternatively, the methods used by the segmentor are available as a Python packa
 2. Run the `renal_segmentor.exe -h` to generate a list of available parameters. The application runs via a command line if any input arguments are specified, if not, it opens as a GUI.
 
 ### As a Python package
-1. Activate the python environment you want to install the package on and run `pip install renal_segmentor`.
+1. Activate the python environment you want to install the package on and run `pip install renalsegmentor`.
 2. The example code snippet below will generate a mask of `T2w.nii.gz` as a numpy array and print the TKV to the terminal.
 
 ```python

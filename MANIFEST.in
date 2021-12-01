@@ -1,0 +1,3 @@
+include LICENSE.txt
+global-include *.hdr *.img *.nii *.nii.gz *.PAR *.REC
+global-exclude __pycache__

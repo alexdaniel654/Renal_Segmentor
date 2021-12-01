@@ -1,24 +1,43 @@
-name: Generate new release on version tag
+name: New Release
 
 # Controls when the action will run.
 on:
   push:
     tags:
     - 'v*'
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
+  windows_package:
+    runs-on: windows-2019
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          mkdir models
+          cd models
+          curl.exe -o renal_segmentor.model https://zenodo.org/record/4894406/files/whole_kidney_cnn.model
+          cd ..
+      - name: Run PyInstaller
+        run: pyinstaller renal_segmentor.spec --additional-hooks-dir=hooks
+      - name: Upload binaries to action
+        uses: actions/upload-artifact@v2
+        with:
+          name: renal_segmentor.exe
+          path: dist
+
+  release:
+    needs: [windows_package]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download Artifacts
+        uses: actions/download-artifact@v2
       - name: Release
         uses: docker://antonyurchenko/git-release:v4
         env:
@@ -27,3 +46,26 @@ jobs:
           PRE_RELEASE: "false"
           CHANGELOG_FILE: "CHANGELOG.md"
           ALLOW_EMPTY_CHANGELOG: "false"
+        with:
+          args: |
+            renal_segmentor.exe
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install twine wheel
+      - name: Build binary wheel and a source tarball
+        run: |
+          python setup.py sdist bdist_wheel
+      - name: Publish distribution to Test PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_TEST_API_TOKEN }}
+          repository_url: https://test.pypi.org/legacy/
+#      - name: Publish distribution to PyPI
+#        uses: pypa/gh-action-pypi-publish@release/v1
+#        with:
+#          password: ${{ secrets.PYPI_API_TOKEN }}
