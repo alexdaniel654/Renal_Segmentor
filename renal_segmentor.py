@@ -145,7 +145,6 @@ def main():
 
     parser = get_parser()
     args = parser.parse_args()
-    weights_path = fetch.Weights().path
     # Import data
     volumes = pd.DataFrame(index=args.input, columns=['tkv', 'lkv', 'rkv'])
     n = 0
@@ -153,8 +152,7 @@ def main():
         n += 1
         segmentation = Tkv(path)
 
-        mask = segmentation.get_mask(post_process=args.post_process,
-                                     weights_path=weights_path)
+        mask = segmentation.get_mask(post_process=args.post_process)
 
         volumes.loc[path, 'tkv'] = segmentation.tkv
         volumes.loc[path, 'lkv'] = segmentation.lkv

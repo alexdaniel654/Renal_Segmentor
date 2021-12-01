@@ -43,6 +43,7 @@ class Weights:
         self.target_file = os.path.join(segment_home, 'renal_segmentor.model')
         already_exists = os.path.isfile(self.target_file)
         if not already_exists:
+            print('Downloading model weights')
             wget.download('https://zenodo.org/record/4894406/files'
                           '/whole_kidney_cnn.model?download=1',
                           self.target_file)

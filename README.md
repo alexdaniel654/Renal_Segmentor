@@ -6,7 +6,7 @@
 
 An application and Python package to segment kidneys from renal MRI data using a convolutional neural network (CNN).
 
-<h2 align="center"><img src="images/banner.png" height="128"></h2>
+<h2 align="center"><img src="https://raw.githubusercontent.com/alexdaniel654/Renal_Segmentor/master/images/banner.png" height="128"></h2>
 
 ## Using the segmentor
 
@@ -28,7 +28,7 @@ Alternatively, the methods used by the segmentor are available as a Python packa
 10. The application will run and a few seconds later a box will appear saying the program completed successfully. The first time you run a segmentation will take a little longer as the latest algorithm weights are downloaded from the internet at this point.
 11. If you want to segment some more data click the `edit` button on the bottom of the finished screen, if you're done, click `close`.
 
-![Interface](images/screenshot.png)
+<h2 align="center"><img src="https://raw.githubusercontent.com/alexdaniel654/Renal_Segmentor/master/images/screenshot.png" height="512"></h2>
 
 ### Via a Command Line Interface (CLI)
 1. Download the [latest release](https://github.com/alexdaniel654/Renal_Segmentor/releases/latest/download/renal_segmentor.exe)
