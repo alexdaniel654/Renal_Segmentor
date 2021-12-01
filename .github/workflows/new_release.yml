@@ -29,7 +29,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: renal_segmentor.exe
-          path: dist
+          path: dist/renal_segmentor.exe
 
   release:
     needs: [windows_package]
@@ -38,6 +38,8 @@ jobs:
       - uses: actions/checkout@v2
       - name: Download Artifacts
         uses: actions/download-artifact@v2
+      - name: Display structure of downloaded files
+        run: ls -R
       - name: Release
         uses: docker://antonyurchenko/git-release:v4
         env:
