@@ -28,7 +28,7 @@ jobs:
       - name: Upload binaries to action
         uses: actions/upload-artifact@v2
         with:
-          name: renal_segmentor.exe
+          name: windows_binary
           path: dist/renal_segmentor.exe
       - name: Display structure of downloaded files
         run: ls -R
@@ -54,7 +54,7 @@ jobs:
           ALLOW_EMPTY_CHANGELOG: "false"
         with:
           args: |
-            renal_segmentor.exe/renal_segmentor.exe
+            windows_binary/renal_segmentor.exe
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
