@@ -1,7 +1,19 @@
 # Changelog
 
+## [1.3.0-rc.13] - 2021-12-01
 
-## Unmerged
+### Added
+* Segmentation is now a standalone pip package
+* Automatic windows binary generation
+
+### Changed
+* Improved sample data handling
+* Weights now on Zenodo
+
+### Fixed
+
+
+## [1.2.0] - 2021-08-27
 
 ### Added
 * Kidney volume calculations #32
