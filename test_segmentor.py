@@ -77,9 +77,12 @@ class TestCli:
 
             volumes = pd.read_csv('test_output/volumes.csv')
 
-            npt.assert_allclose(volumes['TKV (ml)'].mean(), 304.663341)
-            npt.assert_allclose(volumes['LKV (ml)'].mean(), 159.170390)
-            npt.assert_allclose(volumes['RKV (ml)'].mean(), 145.492951)
+            npt.assert_allclose(volumes['TKV (ml)'].mean(), 304.663341,
+                                atol=0.5, rtol=1E-2)
+            npt.assert_allclose(volumes['LKV (ml)'].mean(), 159.1703901,
+                                atol=0.5, rtol=1E-2)
+            npt.assert_allclose(volumes['RKV (ml)'].mean(), 145.4929511,
+                                atol=0.5, rtol=1E-2)
 
             mask_sub_01 = nib.load(
                 'test_output/test_sub_01_mask.nii.gz').get_fdata()

@@ -15,4 +15,4 @@ def image_stats(data):
 def same_image(test, gold_image_stats):
     if type(test) != list and len(test) != 6:
         test = image_stats(test)
-    npt.assert_allclose(test, gold_image_stats, rtol=1e-3, atol=1e-9)
+    npt.assert_allclose(test, gold_image_stats, rtol=1e-2, atol=1e-3)
