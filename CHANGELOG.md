@@ -1,16 +1,17 @@
 # Changelog
 
-## [1.3.0-rc.17] - 2021-12-01
+## [1.3.0] - 2021-12-02
 
 ### Added
-* Segmentation is now a standalone pip package
-* Automatic windows binary generation
+* Segmentation is now a standalone pip package #199 #209
+* Automatic windows binary generation #171
 
 ### Changed
 * Improved sample data handling
-* Weights now on Zenodo
+* Lots of dependencies
 
 ### Fixed
+* Codecov now doesn't use depricated action #200
 
 
 ## [1.2.0] - 2021-08-27
