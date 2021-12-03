@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.3.0] - 2021-12-03
+
+### Added
+* Segmentation is now a standalone pip package #199 #209
+* Automatic windows binary generation #171
+
+### Changed
+* Improved sample data handling
+* Lots of dependencies
+
+### Fixed
+* Codecov now doesn't use depricated action #200
+
+
 ## [1.2.0] - 2021-08-27
 
 ### Added
