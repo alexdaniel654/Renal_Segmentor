@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.4.0-rc.1] - 2021-12-07
+
+### Added
+* Automatic macos app generation
+
+### Changed
+
+
+### Fixed
+
+
 ## [1.3.0] - 2021-12-03
 
 ### Added

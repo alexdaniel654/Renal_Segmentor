@@ -31,8 +31,34 @@ jobs:
           name: windows_binary
           path: dist/renal_segmentor.exe
 
+  osx_package:
+    runs-on: macos-10.15
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          mkdir models
+          cd models
+          wget -o renal_segmentor.model https://zenodo.org/record/4894406/files/whole_kidney_cnn.model
+          cd ..
+      - name: Run PyInstaller
+        run: pyinstaller renal_segmentor.spec --additional-hooks-dir=hooks --windowed
+      - name: Display structure of downloaded files
+        run: ls -R
+      - name: Upload binaries to action
+        uses: actions/upload-artifact@v2
+        with:
+          name: macos_binary
+          path: dist/renal_segmentor.app
+
   release:
-    needs: [windows_package]
+    needs: [windows_package, osx_package]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -42,30 +68,31 @@ jobs:
         uses: docker://antonyurchenko/git-release:v4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DRAFT_RELEASE: "false"
-          PRE_RELEASE: "false"
+          DRAFT_RELEASE: "true"
+          PRE_RELEASE: "true"
           CHANGELOG_FILE: "CHANGELOG.md"
           ALLOW_EMPTY_CHANGELOG: "false"
         with:
           args: |
             windows_binary/renal_segmentor.exe
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.8
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install twine wheel
-      - name: Build binary wheel and a source tarball
-        run: |
-          python setup.py sdist bdist_wheel
-      - name: Publish distribution to Test PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          password: ${{ secrets.PYPI_TEST_API_TOKEN }}
-          repository_url: https://test.pypi.org/legacy/
-      - name: Publish distribution to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          password: ${{ secrets.PYPI_API_TOKEN }}
+            macos_binary/renal_segmentor.app
+#      - name: Set up Python ${{ matrix.python-version }}
+#        uses: actions/setup-python@v2
+#        with:
+#          python-version: 3.8
+#      - name: Install dependencies
+#        run: |
+#          python -m pip install --upgrade pip
+#          pip install twine wheel
+#      - name: Build binary wheel and a source tarball
+#        run: |
+#          python setup.py sdist bdist_wheel
+#      - name: Publish distribution to Test PyPI
+#        uses: pypa/gh-action-pypi-publish@release/v1
+#        with:
+#          password: ${{ secrets.PYPI_TEST_API_TOKEN }}
+#          repository_url: https://test.pypi.org/legacy/
+#      - name: Publish distribution to PyPI
+#        uses: pypa/gh-action-pypi-publish@release/v1
+#        with:
+#          password: ${{ secrets.PYPI_API_TOKEN }}
