@@ -39,7 +39,7 @@ Alternatively, the methods used by the segmentor are available as a Python packa
 2. The example code snippet below will generate a mask of `T2w.nii.gz` as a numpy array and print the TKV to the terminal.
 
 ```python
-from segmentor import Tkv
+from segment import Tkv
 segmentation = Tkv('T2w.nii.gz')
 mask = segmentation.get_mask()
 print(f'Total Kidney Volume = {segmentation.tkv:.2f} ml')
