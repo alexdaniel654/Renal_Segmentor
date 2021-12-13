@@ -200,7 +200,7 @@ class Tkv:
             is the same as the raw data.
         """
         if path is None:
-            path = os.path.join(self.path, self.base + '.nii.gz')
+            path = os.path.join(self.directory, self.base + '.nii.gz')
         nib.save(self._img, path)
 
     @staticmethod
