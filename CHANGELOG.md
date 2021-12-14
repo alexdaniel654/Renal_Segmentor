@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.3.1] - 2021-12-14
+
+### Changed
+* `Tkv` can now take nibabel objects as its input rather than just the path to the image file #216
+* Bump scikit-image #214 and pandas #215
+
+### Fixed 
+* Bug in `Tkv.data_to_nifti` when default path was used
+* Typo in readme
+
+
 ## [1.3.0] - 2021-12-03
 
 ### Added

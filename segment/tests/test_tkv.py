@@ -8,30 +8,54 @@ from segment.data import fetch
 from .utils import image_stats, same_image
 
 
-class TestRawData:
+class TestTkv:
     @pytest.mark.parametrize('path, expected', [
         (fetch.Sub1('PAR').path,
+         [15586.417648035316, 12314.402055019415, 95094.74873995132, 0.0, 13,
+          1851954.3729744065]),
+        (fetch.Sub1('PAR').img,
          [15586.417648035316, 12314.402055019415, 95094.74873995132, 0.0, 13,
           1851954.3729744065]),
         (fetch.Sub1('img').path,
          [15586.417648035316, 12314.402055019415, 95094.74873995132, 0.0, 13,
           1851954.3729744065]),
+        (fetch.Sub1('img').img,
+         [15586.417648035316, 12314.402055019415, 95094.74873995132, 0.0, 13,
+          1851954.3729744065]),
         (fetch.Sub1('nii').path,
+         [15586.417648035316, 12314.402055019415, 95094.74873995132, 0.0, 13,
+          1851954.3729744065]),
+        (fetch.Sub1('nii').img,
          [15586.417648035316, 12314.402055019415, 95094.74873995132, 0.0, 13,
           1851954.3729744065]),
         (fetch.Sub1('nii.gz').path,
          [15586.417648035316, 12314.402055019415, 95094.74873995132, 0.0, 13,
           1851954.3729744065]),
+        (fetch.Sub1('nii.gz').img,
+         [15586.417648035316, 12314.402055019415, 95094.74873995132, 0.0, 13,
+          1851954.3729744065]),
         (fetch.Sub2('PAR').path,
+         [9.148690e+03, 1.237672e+04, 1.338610e+05, 0.000000e+00, 1.700000e+01,
+          1.591041e+06]),
+        (fetch.Sub2('PAR').img,
          [9.148690e+03, 1.237672e+04, 1.338610e+05, 0.000000e+00, 1.700000e+01,
           1.591041e+06]),
         (fetch.Sub2('img').path,
          [9.148663e+03, 1.237674e+04, 1.338610e+05, 0.000000e+00, 1.700000e+01,
           1.591044e+06]),
+        (fetch.Sub2('img').img,
+         [9.148663e+03, 1.237674e+04, 1.338610e+05, 0.000000e+00, 1.700000e+01,
+          1.591044e+06]),
         (fetch.Sub2('nii').path,
          [9.148663e+03, 1.237674e+04, 1.338610e+05, 0.000000e+00, 1.700000e+01,
           1.591044e+06]),
+        (fetch.Sub2('nii').img,
+         [9.148663e+03, 1.237674e+04, 1.338610e+05, 0.000000e+00, 1.700000e+01,
+          1.591044e+06]),
         (fetch.Sub2('nii.gz').path,
+         [9.148663e+03, 1.237674e+04, 1.338610e+05, 0.000000e+00, 1.700000e+01,
+          1.591044e+06]),
+        (fetch.Sub2('nii.gz').img,
          [9.148663e+03, 1.237674e+04, 1.338610e+05, 0.000000e+00, 1.700000e+01,
           1.591044e+06]),
     ])
@@ -68,15 +92,31 @@ class TestRawData:
          [0.040264, 0.19392, 1.0,  0.0, 13.0, 0.0],
          [0.040212, 0.193889, 1.0, 0.0, 13.0, 0.0],
          352.65681),
+        (fetch.Sub1('PAR').img,
+         [0.040264, 0.19392, 1.0, 0.0, 13.0, 0.0],
+         [0.040212, 0.193889, 1.0, 0.0, 13.0, 0.0],
+         352.65681),
         (fetch.Sub1('nii.gz').path,
          [0.040264, 0.19392, 1.0,  0.0, 13.0, 0.0],
+         [0.040212, 0.193889, 1.0, 0.0, 13.0, 0.0],
+         352.55157),
+        (fetch.Sub1('nii.gz').img,
+         [0.040264, 0.19392, 1.0, 0.0, 13.0, 0.0],
          [0.040212, 0.193889, 1.0, 0.0, 13.0, 0.0],
          352.55157),
         (fetch.Sub2('PAR').path,
          [0.018649, 0.13261, 1.0, 0.0, 17.0, 0.0],
          [0.018423, 0.131926, 1.0, 0.0, 17.0, 0.0],
          253.87312),
+        (fetch.Sub2('PAR').img,
+         [0.018649, 0.13261, 1.0, 0.0, 17.0, 0.0],
+         [0.018423, 0.131926, 1.0, 0.0, 17.0, 0.0],
+         253.87312),
         (fetch.Sub2('nii.gz').path,
+         [0.018649, 0.13261, 1.0, 0.0, 17.0, 0.0],
+         [0.018423, 0.131926, 1.0, 0.0, 17.0, 0.0],
+         253.87313),
+        (fetch.Sub2('nii.gz').img,
          [0.018649, 0.13261, 1.0, 0.0, 17.0, 0.0],
          [0.018423, 0.131926, 1.0, 0.0, 17.0, 0.0],
          253.87313),
@@ -92,22 +132,27 @@ class TestRawData:
     @pytest.mark.parametrize('path, expected', [
         (fetch.Sub1('PAR').path,
          [0.040212, 0.193889, 1.0, 0.0, 13.0, 0.0]),
+        (fetch.Sub1('PAR').img,
+         [0.040212, 0.193889, 1.0, 0.0, 13.0, 0.0]),
         (fetch.Sub2('PAR').path,
+         [0.018423, 0.131926, 1.0, 0.0, 17.0, 0.0]),
+        (fetch.Sub2('PAR').img,
          [0.018423, 0.131926, 1.0, 0.0, 17.0, 0.0])
     ])
     def test_mask_to_nifti(self, path, expected):
-        directory = os.path.dirname(path)
-        base = os.path.splitext(os.path.basename(path))[0]
         raw_data = Tkv(path)
+        directory = raw_data.directory
+        base = raw_data.base
 
         # Default name
         raw_data.mask_to_nifti()
         output_files = os.listdir(directory)
         expected_output = base + '_mask.nii.gz'
         assert expected_output in output_files
-        saved_data = nib.load(path[:-4] + '_mask.nii.gz').get_fdata()
+        saved_data = nib.load(os.path.join(directory,
+                                           base + '_mask.nii.gz')).get_fdata()
         same_image(saved_data, expected)
-        os.remove(path[:-4] + '_mask.nii.gz')
+        os.remove(os.path.join(directory, base + '_mask.nii.gz'))
 
         # Custom name
         raw_data.mask_to_nifti(os.path.join(directory,
@@ -124,14 +169,21 @@ class TestRawData:
         (fetch.Sub1('PAR').path,
          [1.558641e+04, 1.231441e+04, 9.509475e+04, 0.000000e+00,
          1.300000e+01, 1.851950e+06]),
+        (fetch.Sub1('PAR').img,
+         [1.558641e+04, 1.231441e+04, 9.509475e+04, 0.000000e+00,
+          1.300000e+01, 1.851950e+06]),
         (fetch.Sub2('PAR').path,
+         [9.148663e+03, 1.237674e+04, 1.338610e+05, 0.000000e+00,
+          1.700000e+01, 1.591044e+06]),
+        (fetch.Sub2('PAR').img,
          [9.148663e+03, 1.237674e+04, 1.338610e+05, 0.000000e+00,
           1.700000e+01, 1.591044e+06])
     ])
     def test_image_to_nifti(self, path, expected):
-        directory = os.path.dirname(path)
-        base = os.path.splitext(os.path.basename(path))[0]
+
         raw_data = Tkv(path)
+        directory = raw_data.directory
+        base = raw_data.base
         # Custom name (avoids overwriting existing data)
         raw_data.data_to_nifti(os.path.join(directory,
                                             base + '_raw_data.nii.gz'))

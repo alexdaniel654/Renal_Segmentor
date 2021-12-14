@@ -49,30 +49,42 @@ class Tkv:
     _mask_img : nib.Nifti1Image
         Nibabel object of the output mask
     """
-    def __init__(self, path):
+    def __init__(self, path_or_buf):
         """
         Initialise the Tkv class instance.
 
         Parameters
         ----------
-        path : str
+        path_or_buf : str or nibabel object
             Path to the input data, can be any data file nibabel is capable
-            of reading.
+            of reading or the nibabel object itself.
         """
-        self.path = path
-        self.directory, self.base, self.extension = self._split_path(self.path)
-        self._img = nib.Nifti1Image
-        self.data = np.array
+        if type(path_or_buf) is str:
+            self.path = path_or_buf
+            self.directory, self.base, self.extension = self._split_path(self.path)
+            self._img = nib.Nifti1Image
+            self.data = np.array
+            self.affine = np.array
+            self.shape = tuple
+            self.zoom = tuple
+            self.orientation = None
+            self._load_data()
+        else:
+            self._img = path_or_buf
+            self.path = self._img.get_filename()
+            self.directory, self.base, self.extension = self._split_path(self.path)
+            self.data = self._img.get_fdata()
+            self.affine = self._img.affine
+            self.shape = self._img.shape
+            self.zoom = self._img.header.get_zooms()
+            self.orientation = nib.orientations.aff2axcodes(self.affine)
+
         self.mask = np.array
         self._mask_img = nib.Nifti1Image
-        self.affine = np.array
-        self.shape = tuple
-        self.zoom = tuple
-        self.orientation = None
         self.tkv = np.nan
         self.lkv = np.nan
         self.rkv = np.nan
-        self._load_data()
+
 
     @staticmethod
     def _split_path(path):
@@ -200,7 +212,7 @@ class Tkv:
             is the same as the raw data.
         """
         if path is None:
-            path = os.path.join(self.path, self.base + '.nii.gz')
+            path = os.path.join(self.directory, self.base + '.nii.gz')
         nib.save(self._img, path)
 
     @staticmethod
