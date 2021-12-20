@@ -92,12 +92,15 @@ class Tkv:
         Split a path to a file into the files directory, file name and file
         extension.
         """
-        directory = os.path.dirname(path)
-        base = os.path.splitext(os.path.basename(path))[0]
-        extension = os.path.splitext(os.path.basename(path))[1]
-        if extension == '.gz' and base[-4:] == '.nii':
-            extension = '.nii.gz'
-            base = base[:-4]
+        if type(path) is not str:
+            directory, base, extension = None, None, None
+        else:
+            directory = os.path.dirname(path)
+            base = os.path.splitext(os.path.basename(path))[0]
+            extension = os.path.splitext(os.path.basename(path))[1]
+            if extension == '.gz' and base[-4:] == '.nii':
+                extension = '.nii.gz'
+                base = base[:-4]
         return directory, base, extension
 
     def _load_data(self):
@@ -194,7 +197,16 @@ class Tkv:
             is the same as the raw data, with _mask appended to the filename.
         """
         if path is None:
-            path = os.path.join(self.directory, self.base + '_mask.nii.gz')
+            if self.directory is None:
+                raise TypeError('Directory could not be inferred from input '
+                                'data, please specify the `path` argument in '
+                                'mask_to_nifti.')
+            elif self.base is None:
+                raise TypeError('Filename could not be inferred from input '
+                                'data, please specify the `path` argument in '
+                                'mask_to_nifti.')
+            else:
+                path = os.path.join(self.directory, self.base + '_mask.nii.gz')
 
         # Generate the mask if that hasn't already been done
         if type(self._mask_img) is type:
@@ -212,7 +224,16 @@ class Tkv:
             is the same as the raw data.
         """
         if path is None:
-            path = os.path.join(self.directory, self.base + '.nii.gz')
+            if self.directory is None:
+                raise TypeError('Directory could not be inferred from input '
+                                'data, please specify the `path` argument in '
+                                'data_to_nifti.')
+            elif self.base is None:
+                raise TypeError('Filename could not be inferred from input '
+                                'data, please specify the `path` argument in '
+                                'data_to_nifti.')
+            else:
+                path = os.path.join(self.directory, self.base + '.nii.gz')
         nib.save(self._img, path)
 
     @staticmethod
