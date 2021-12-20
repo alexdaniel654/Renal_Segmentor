@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.3.2] - 2021-12-20
+
+### Changed
+* Bump scikit-image #218 and numpy #219
+
+### Fixed
+* Bug if no path could be inferred from nib.Nifti1Image i.e. image was made in script rather than loaded from disk.
+
+
 ## [1.3.1] - 2021-12-14
 
 ### Changed
