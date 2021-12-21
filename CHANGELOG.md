@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.3.3] - 2021-12-21
+
+### Changed
+* GUI requirements (Gooey and PyInstaller) are now optional to try and save time/make install easier on linux where wxPython is a bit of a pain. #221
+
+
 ## [1.3.2] - 2021-12-20
 
 ### Changed
