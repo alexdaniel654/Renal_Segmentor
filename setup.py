@@ -3,6 +3,9 @@ from setuptools import setup, find_packages
 with open('requirements.txt') as f:
     requirements = f.read().splitlines()
 
+with open('requirements_gui.txt') as f:
+    requirements_gui = f.read().splitlines()
+
 with open('README.md', encoding='utf-8') as f:
     long_description = f.read()
 
@@ -18,9 +21,8 @@ setup(
     python_requires='>=3.7, <4',
     packages=find_packages(),
     install_requires=requirements,
+    extras_require={'gui': [requirements_gui]},
     include_package_data=True,
-
-
     classifiers=[
         'Development Status :: 5 - Production/Stable',
 
