@@ -34,6 +34,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install flake8 pytest pytest-cov codecov wheel
         pip install -r requirements.txt
+        pip install -r requirements_gui.txt
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
