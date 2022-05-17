@@ -18,7 +18,7 @@ setup(
     url="https://github.com/alexdaniel654/Renal_Segmentor",
     license="GPL-3.0",
 
-    python_requires='>=3.7, <4',
+    python_requires='>=3.8, <4',
     packages=find_packages(),
     install_requires=requirements,
     extras_require={'gui': [requirements_gui]},
@@ -33,9 +33,9 @@ setup(
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 3',
 
-        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
 
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
     ],
