@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.3.4] - 2022-06-10
+
+### Added
+* Citation file
+
+### Changed
+* Drop support for Python 3.7 #223
+* Lots of dependencies 
+
+
 ## [1.3.3] - 2021-12-21
 
 ### Changed
