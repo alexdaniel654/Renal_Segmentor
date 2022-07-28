@@ -120,65 +120,81 @@ class TestTkv:
         assert base == expected[1]
         assert extension == expected[2]
 
-    @pytest.mark.parametrize('path, expected, expected_cleaned, tkv_cleaned', [
+    @pytest.mark.parametrize('path, expected, expected_prob, '
+                             'expected_cleaned, tkv_cleaned', [
         (fetch.Sub1('PAR').path,
-         [0.040264, 0.19392, 1.0,  0.0, 13.0, 0.0],
+         [0.040264, 0.19392, 1.0, 0.0, 13.0, 0.0],
+         [0.040264, 0.19392, 1.0, 0.0, 13.0, 0.0],
          [0.040212, 0.193889, 1.0, 0.0, 13.0, 0.0],
          352.65681),
         (fetch.Sub1('PAR').img,
+         [0.040264, 0.19392, 1.0, 0.0, 13.0, 0.0],
          [0.040264, 0.19392, 1.0, 0.0, 13.0, 0.0],
          [0.040212, 0.193889, 1.0, 0.0, 13.0, 0.0],
          352.65681),
         (nib.Nifti1Image(fetch.Sub1('PAR').img.get_fdata(),
                          fetch.Sub1('PAR').img.affine),
          [0.040264, 0.19392, 1.0, 0.0, 13.0, 0.0],
+         [0.040264, 0.19392, 1.0, 0.0, 13.0, 0.0],
          [0.040212, 0.193889, 1.0, 0.0, 13.0, 0.0],
          352.65681),
         (fetch.Sub1('nii.gz').path,
-         [0.040264, 0.19392, 1.0,  0.0, 13.0, 0.0],
+         [0.040264, 0.19392, 1.0, 0.0, 13.0, 0.0],
+         [0.040264, 0.19392, 1.0, 0.0, 13.0, 0.0],
          [0.040212, 0.193889, 1.0, 0.0, 13.0, 0.0],
          352.55157),
         (fetch.Sub1('nii.gz').img,
+         [0.040264, 0.19392, 1.0, 0.0, 13.0, 0.0],
          [0.040264, 0.19392, 1.0, 0.0, 13.0, 0.0],
          [0.040212, 0.193889, 1.0, 0.0, 13.0, 0.0],
          352.55157),
         (nib.Nifti1Image(fetch.Sub1('nii.gz').img.get_fdata(),
                          fetch.Sub1('nii.gz').img.affine),
          [0.040264, 0.19392, 1.0, 0.0, 13.0, 0.0],
+         [0.040264, 0.19392, 1.0, 0.0, 13.0, 0.0],
          [0.040212, 0.193889, 1.0, 0.0, 13.0, 0.0],
          352.55157),
         (fetch.Sub2('PAR').path,
+         [0.018617, 0.135167, 1.0, 0.0, 17.0, 0.0],
          [0.018649, 0.13261, 1.0, 0.0, 17.0, 0.0],
-         [0.018423, 0.131926, 1.0, 0.0, 17.0, 0.0],
+         [0.018414, 0.134442, 1.0, 0.0, 17.0, 0.0],
          253.87312),
         (fetch.Sub2('PAR').img,
+         [0.018617, 0.135167, 1.0, 0.0, 17.0, 0.0],
          [0.018649, 0.13261, 1.0, 0.0, 17.0, 0.0],
-         [0.018423, 0.131926, 1.0, 0.0, 17.0, 0.0],
+         [0.018414, 0.134442, 1.0, 0.0, 17.0, 0.0],
          253.87312),
         (nib.Nifti1Image(fetch.Sub2('PAR').img.get_fdata(),
                          fetch.Sub2('PAR').img.affine),
+         [0.018617, 0.135167, 1.0, 0.0, 17.0, 0.0],
          [0.018649, 0.13261, 1.0, 0.0, 17.0, 0.0],
-         [0.018423, 0.131926, 1.0, 0.0, 17.0, 0.0],
+         [0.018414, 0.134442, 1.0, 0.0, 17.0, 0.0],
          253.87312),
         (fetch.Sub2('nii.gz').path,
+         [0.018617, 0.135167, 1.0, 0.0, 17.0, 0.0],
          [0.018649, 0.13261, 1.0, 0.0, 17.0, 0.0],
-         [0.018423, 0.131926, 1.0, 0.0, 17.0, 0.0],
+         [0.018414, 0.134442, 1.0, 0.0, 17.0, 0.0],
          253.87313),
         (fetch.Sub2('nii.gz').img,
+         [0.018617, 0.135167, 1.0, 0.0, 17.0, 0.0],
          [0.018649, 0.13261, 1.0, 0.0, 17.0, 0.0],
-         [0.018423, 0.131926, 1.0, 0.0, 17.0, 0.0],
+         [0.018414, 0.134442, 1.0, 0.0, 17.0, 0.0],
          253.87313),
         (nib.Nifti1Image(fetch.Sub2('nii.gz').img.get_fdata(),
                          fetch.Sub2('nii.gz').img.affine),
+         [0.018617, 0.135167, 1.0, 0.0, 17.0, 0.0],
          [0.018649, 0.13261, 1.0, 0.0, 17.0, 0.0],
-         [0.018423, 0.131926, 1.0, 0.0, 17.0, 0.0],
+         [0.018414, 0.134442, 1.0, 0.0, 17.0, 0.0],
          253.87313),
     ])
-    def test_get_mask(self, path, expected, expected_cleaned, tkv_cleaned):
+    def test_get_mask(self, path, expected, expected_prob, expected_cleaned,
+                      tkv_cleaned):
         raw_data = Tkv(path)
-        prediction = raw_data.get_mask(post_process=False)
-        prediction_cleaned = raw_data.get_mask(post_process=True)
+        prediction = raw_data.get_mask(post_process=False, binary=True)
+        prediction_prob = raw_data.get_mask(post_process=False, binary=False)
+        prediction_cleaned = raw_data.get_mask(post_process=True, binary=True)
         same_image(prediction, expected)
+        same_image(prediction_prob, expected_prob)
         same_image(prediction_cleaned, expected_cleaned)
         np.isclose(raw_data.tkv, tkv_cleaned)
 
@@ -188,9 +204,9 @@ class TestTkv:
         (fetch.Sub1('PAR').img,
          [0.040212, 0.193889, 1.0, 0.0, 13.0, 0.0]),
         (fetch.Sub2('PAR').path,
-         [0.018423, 0.131926, 1.0, 0.0, 17.0, 0.0]),
+         [0.018414, 0.134442, 1.0, 0.0, 17.0, 0.0]),
         (fetch.Sub2('PAR').img,
-         [0.018423, 0.131926, 1.0, 0.0, 17.0, 0.0])
+         [0.018414, 0.134442, 1.0, 0.0, 17.0, 0.0])
     ])
     def test_mask_to_nifti(self, path, expected):
         raw_data = Tkv(path)
