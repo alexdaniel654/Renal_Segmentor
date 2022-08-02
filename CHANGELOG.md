@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.3.5] - 2022-08-02
+
+### Added
+* Option to output binary masks
+
+### Changed
+* Lots of dependencies upgrade
+
+### Fixed
+* Typos
+
+
 ## [1.3.4] - 2022-06-10
 
 ### Added

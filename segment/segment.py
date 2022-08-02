@@ -118,20 +118,27 @@ class Tkv:
         self.zoom = self._img.header.get_zooms()
         self.orientation = nib.orientations.aff2axcodes(self.affine)
 
-    def get_mask(self, weights_path=None, post_process=True, inplace=False):
+    def get_mask(self, weights_path=None, post_process=True,
+                 binary=True, inplace=False):
         """
         Estimate a mask from the provided input data.
 
         Parameters
         ----------
         weights_path : str, optional
-            Path to custom neural network weights. Defaults ot segment home
-            and will download latest weights if nothing is specified.
+            Path to custom neural network weights. Defaults to segment home
+            and will download the latest weights if nothing is specified.
         post_process : bool, optional
             Default True
             Keep only the two largest connected volumes in the mask. Note
             this may cause issue with subjects that have more or less than
             two kidneys.
+        binary : bool, optional
+            Default True.
+            If True, the mask returned will be an array of ints, where 1
+            represents voxels that are renal tissue and 0 represents
+            voxels that are not renal tissue. If False, the mask returned
+            will be the probability that each voxel is renal tissue.
         inplace : bool, optional
             Default False
             If true, no numpy array of the mask will be returned, instead
@@ -142,7 +149,8 @@ class Tkv:
         Returns
         -------
         mask : np.ndarray, optional
-            The estimated probability that each voxel is renal tissue
+            The estimated probability that each voxel is/binary mask of renal
+            tissue
         """
         if weights_path is None:
             weights_path = fetch.Weights().path
@@ -176,6 +184,10 @@ class Tkv:
                                  voxel_size=self.zoom,
                                  orientation=self.orientation)
         self.mask = self._rescale(self._mask_img.get_fdata(), 0, 1)
+
+        if binary:
+            self.mask = np.round(self.mask).astype(np.int)
+
         self._mask_img = nib.Nifti1Image(self.mask, self._mask_img.affine)
         self.tkv = (np.sum(self.mask > 0.5) *
                     np.prod(self.zoom))/1000
