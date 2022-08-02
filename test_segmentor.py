@@ -90,7 +90,7 @@ class TestCli:
                 'test_output/test_sub_02_mask.nii.gz').get_fdata()
 
             same_image(mask_sub_01, [0.040264, 0.19392, 1.0,  0.0, 13.0, 0.0])
-            same_image(mask_sub_02, [0.018649, 0.13261, 1.0, 0.0, 17.0, 0.0])
+            same_image(mask_sub_02, [0.018617, 0.135167, 1.0, 0.0, 17.0, 0.0])
 
             for f in os.listdir('test_output'):
                 os.remove(os.path.join('test_output', f))
