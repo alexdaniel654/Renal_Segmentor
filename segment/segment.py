@@ -126,8 +126,8 @@ class Tkv:
         Parameters
         ----------
         weights_path : str, optional
-            Path to custom neural network weights. Defaults ot segment home
-            and will download latest weights if nothing is specified.
+            Path to custom neural network weights. Defaults to segment home
+            and will download the latest weights if nothing is specified.
         post_process : bool, optional
             Default True
             Keep only the two largest connected volumes in the mask. Note
