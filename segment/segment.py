@@ -186,7 +186,7 @@ class Tkv:
         self.mask = self._rescale(self._mask_img.get_fdata(), 0, 1)
 
         if binary:
-            self.mask = np.round(self.mask).astype(np.int)
+            self.mask = np.round(self.mask).astype(np.uint16)
 
         self._mask_img = nib.Nifti1Image(self.mask, self._mask_img.affine)
         self.tkv = (np.sum(self.mask > 0.5) *

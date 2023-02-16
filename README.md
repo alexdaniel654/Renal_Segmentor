@@ -1,6 +1,7 @@
 # Renal Segmentor
 [![Python CI](https://github.com/alexdaniel654/Renal_Segmentor/actions/workflows/python_ci.yml/badge.svg?branch=master)](https://github.com/alexdaniel654/Renal_Segmentor/actions/workflows/python_ci.yml)
 [![codecov](https://codecov.io/gh/alexdaniel654/Renal_Segmentor/branch/master/graph/badge.svg?token=6oSiDfrFpJ)](https://codecov.io/gh/alexdaniel654/Renal_Segmentor)
+[![Downloads](https://static.pepy.tech/badge/renalsegmentor)](https://pepy.tech/project/renalsegmentor)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![DOI](https://zenodo.org/badge/236753300.svg)](https://zenodo.org/badge/latestdoi/236753300)
 
