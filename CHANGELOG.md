@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.3.6] - 2023-02-16
+
+### Added
+* Downloads counter to readme #287
+* Compatibility with Python 3.10
+
+### Changed
+* Lots of dependencies
+* Dependencies are now set to be compatible versions (~=) rather than pinned to an exact version (==)
+
+
 ## [1.3.5] - 2022-08-02
 
 ### Added
