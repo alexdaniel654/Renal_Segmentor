@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.8] - 2023-07-24
+
+### Changed
+* Lots of dependencies
+* Dependencies are now greater than or equal to (>=) rather than compatible versions (~=)
+
+
 ## [1.3.7] - 2023-06-23
 
 ### Changed
