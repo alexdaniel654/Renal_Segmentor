@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.9] - 2024-03-20
+### Added
+* Testing/Support for Python 3.11
+
+### Fixes
+* Limit Keras to <v3 as newer versions can't load models in the supplied format
+
+
 ## [1.3.8] - 2023-07-24
 
 ### Changed
