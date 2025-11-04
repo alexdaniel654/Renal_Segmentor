@@ -90,7 +90,7 @@ class TestWeights:
     def test_weights(self):
         weights = fetch.Weights()
         assert isinstance(weights.path, str)
-        assert weights.path.endswith('.model')
+        assert weights.path.endswith('.h5')
         assert isinstance(weights.dir, str)
         assert os.path.isfile(weights.path)
 
