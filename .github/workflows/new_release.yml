@@ -8,7 +8,7 @@ on:
 
 jobs:
   windows_package:
-    runs-on: windows-2019
+    runs-on: windows-2022
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.8
@@ -27,7 +27,7 @@ jobs:
       - name: Run PyInstaller
         run: pyinstaller renal_segmentor.spec
       - name: Upload binaries to action
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v5
         with:
           name: windows_binary
           path: dist/renal_segmentor.exe
@@ -38,7 +38,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Download Artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v5
       - name: Release
         uses: docker://antonyurchenko/git-release:v4
         env:
@@ -49,7 +49,7 @@ jobs:
           ALLOW_EMPTY_CHANGELOG: "false"
         with:
           args: |
-            windows_binary/renal_segmentor.exe
+            windows_binary.zip
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
