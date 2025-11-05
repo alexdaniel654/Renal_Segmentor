@@ -7,13 +7,15 @@ import renal_segmentor as rs
 import shutil
 import sys
 
-from gooey.python_bindings import argparse_to_json
 from segment.data import fetch
 from segment.tests.utils import same_image
 from unittest.mock import patch
+if os.getenv('GITHUB_ACTIONS') != 'true':
+    from gooey.python_bindings import argparse_to_json
 
 
 class TestParser:
+    @pytest.mark.skipif(os.getenv('GITHUB_ACTIONS') == 'true', reason="Skipping gooey tests in GitHub Actions")
     @pytest.mark.parametrize('action, widget, expected', [
         (1, 'FileChooser', {'id': 'input',
                             'type': 'FileChooser',
