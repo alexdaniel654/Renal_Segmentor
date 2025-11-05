@@ -6,8 +6,8 @@ from nibabel.processing import conform
 from segment.data import fetch
 from skimage.measure import label, regionprops
 from skimage.transform import resize
-from tensorflow.keras import backend as K
-from tensorflow.keras.models import load_model
+from keras import backend as K
+from keras.models import load_model
 
 # Define Classes
 
@@ -167,7 +167,8 @@ class Tkv:
         model = load_model(weights_path,
                            custom_objects={'dice_coef_loss':
                                            self._dice_coef_loss,
-                                           'dice_coef': self._dice_coef})
+                                           'dice_coef': self._dice_coef},
+                           compile=False)
         batch_size = 2 ** 3
         mask = model.predict(data, batch_size=batch_size)
         mask = np.squeeze(mask)
@@ -183,7 +184,7 @@ class Tkv:
                                  out_shape=self.shape,
                                  voxel_size=self.zoom,
                                  orientation=self.orientation)
-        self.mask = self._rescale(self._mask_img.get_fdata(), 0, 1)
+        self.mask = self._rescale(self._mask_img.get_fdata(), 0, 1).astype(float)
 
         if binary:
             self.mask = np.round(self.mask).astype(np.uint16)

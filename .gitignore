@@ -53,8 +53,10 @@ docs/_build/
 # PyBuilder
 target/
 
-# PyCharm stuff:
+# Editor/IDE stuff:
 .idea/
+.vscode/
 
 # Models
 *.model
+*.h5

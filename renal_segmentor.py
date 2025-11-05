@@ -26,7 +26,7 @@ def get_parser():
     parser.add_argument('input',
                         metavar='Input Data',
                         help='The image you wish to segment.',
-                        nargs='*',
+                        nargs='+',
                         widget='MultiFileChooser',
                         gooey_options={'wildcard':
                                        'Common Files (*.PAR, *.nii.gz, '
