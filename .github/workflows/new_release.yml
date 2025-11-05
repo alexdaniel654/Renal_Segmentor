@@ -22,7 +22,7 @@ jobs:
           pip install -r requirements_gui.txt
           mkdir models
           cd models
-          curl.exe -o renal_segmentor.model https://zenodo.org/record/4894406/files/whole_kidney_cnn.model
+          curl.exe -o renal_segmentor.h5 https://zenodo.org/record/4894406/files/whole_kidney_cnn.model
           cd ..
       - name: Run PyInstaller
         run: pyinstaller renal_segmentor.spec
