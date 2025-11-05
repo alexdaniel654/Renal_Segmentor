@@ -49,7 +49,7 @@ jobs:
           ALLOW_EMPTY_CHANGELOG: "false"
         with:
           args: |
-            windows_binary/renal_segmentor.exe
+            windows_binary.zip
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:

@@ -1,4 +1,9 @@
 # Changelog
+
+## [1.3.10] - 2025-11-05
+### Changed
+* Moved gooey back to requirements_gui.txt 
+
 ## [1.3.10] - 2025-11-05
 ### Added
 * Testing/Support for Python 3.12
