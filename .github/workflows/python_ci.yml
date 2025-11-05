@@ -20,18 +20,22 @@ jobs:
         python-version: [3.8, 3.9, "3.10", "3.11", "3.12"]
 
     steps:
-    - name: Set up environment
-      run: echo "GITHUB_ACTIONS=true" >> $GITHUB_ENV
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
+    - name: Install OS dependencies (Ubuntu)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo apt-get update
+        sudo apt-get install git curl libsdl2-mixer-2.0-0 libsdl2-image-2.0-0 libsdl2-2.0-0 build-essential libgtk-3-dev
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install flake8 pytest pytest-cov codecov wheel attrdict3 
         pip install -r requirements.txt
+        pip install -r requirements_gui.txt --only-binary=:all:
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
