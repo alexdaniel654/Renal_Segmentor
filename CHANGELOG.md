@@ -1,4 +1,9 @@
 # Changelog
+## [1.3.10] - 2025-11-05
+### Added
+* Testing/Support for Python 3.12
+* Compatibility with latest dependencies (mainly keras 3)
+
 
 ## [1.3.9] - 2024-03-20
 ### Added
