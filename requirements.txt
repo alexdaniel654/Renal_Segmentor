@@ -6,3 +6,4 @@ scikit-image>=0.20.0
 tensorflow>=2.13.0
 keras>2
 wget>=3.2
+Gooey~=1.0.8.1
