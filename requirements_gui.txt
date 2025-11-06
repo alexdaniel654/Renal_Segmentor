@@ -1,2 +1,2 @@
-pyinstaller~=5.3
+pyinstaller~=6.16
 Gooey~=1.0.8.1
