@@ -11,7 +11,7 @@ with open('README.md', encoding='utf-8') as f:
 
 setup(
     name="renalsegmentor",
-    version="1.3.11",
+    version="1.3.12",
     description="Segment kidneys from MRI data",
     long_description=long_description,
     long_description_content_type="text/markdown",
