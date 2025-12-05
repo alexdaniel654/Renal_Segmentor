@@ -1,5 +1,8 @@
 # Changelog
-
+## [1.3.12] - 2025-11-06
+### Changed
+* Windows systems now install tensorflow-cpu rather than full tensorflow is modern versions of tensorflow don't support GPU on windows.
+  
 ## [1.3.11] - 2025-11-05
 ### Changed
 * Moved gooey back to requirements_gui.txt 
