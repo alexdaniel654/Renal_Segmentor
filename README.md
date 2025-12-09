@@ -53,7 +53,10 @@ If you have made use of renal segmentor for your work, please cite Daniel AJ, _e
 
 The methods used in this software are outlined in Daniel AJ, _et al_. Automated renal segmentation in healthy and chronic kidney disease subjects using a convolutional neural network. Magnetic Resonance in Medicine 2021;86:1125–1136 doi: [https://doi.org/10.1002/mrm.28768](https://doi.org/10.1002/mrm.28768).
 
-The dataset used to train this network is freely available on Zenodo, doi: [https://doi.org/10.5281/zenodo.5153567](https://doi.org/10.5281/zenodo.5153567).
+Since then the network has been retrained with a larger and more diverse dataset, comprising of 378 subjects with CKD across a range of stages. This dataset was acquired on GE, Philips, and Siemens scanners across nine UK site as part of the AFiRM study. The retrained network shows improved performace over the original version, particularly in subjects with severe renal impairment. The updated network is used as the default in the latest version of Renal Segmentor.
+
+The dataset used to train the original network is freely available on Zenodo, 
+doi: [https://doi.org/10.5281/zenodo.5153567](https://doi.org/10.5281/zenodo.5153567).
 
 ## Contributing
 

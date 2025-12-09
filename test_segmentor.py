@@ -77,11 +77,11 @@ class TestCli:
 
             volumes = pd.read_csv('test_output/volumes.csv')
 
-            npt.assert_allclose(volumes['TKV (ml)'].mean(), 304.663341,
+            npt.assert_allclose(volumes['TKV (ml)'].mean(), 269.4077156,
                                 atol=0.5, rtol=1E-2)
-            npt.assert_allclose(volumes['LKV (ml)'].mean(), 159.1703901,
+            npt.assert_allclose(volumes['LKV (ml)'].mean(), 138.8558927,
                                 atol=0.5, rtol=1E-2)
-            npt.assert_allclose(volumes['RKV (ml)'].mean(), 145.4929511,
+            npt.assert_allclose(volumes['RKV (ml)'].mean(), 130.5518229,
                                 atol=0.5, rtol=1E-2)
 
             mask_sub_01 = nib.load(
@@ -89,8 +89,8 @@ class TestCli:
             mask_sub_02 = nib.load(
                 'test_output/test_sub_02_mask.nii.gz').get_fdata()
 
-            same_image(mask_sub_01, [0.040264, 0.19392, 1.0,  0.0, 13.0, 0.0])
-            same_image(mask_sub_02, [0.018617, 0.135167, 1.0, 0.0, 17.0, 0.0])
+            same_image(mask_sub_01, [0.035514, 0.185075, 1, 0, 13, 0])
+            same_image(mask_sub_02, [0.01653, 0.127501, 1, 0, 17, 0])
 
             for f in os.listdir('test_output'):
                 os.remove(os.path.join('test_output', f))

@@ -1,3 +1,4 @@
+import h5py
 from hashlib import md5
 import nibabel as nib
 import os
@@ -39,14 +40,15 @@ class Sub2:
 
 class Weights:
     def __init__(self):
-        expected_weights_hash = 'e9f60f9fe6ad9eced8b055bf6792a1d1'
-        self.target_file = os.path.join(segment_home, 'renal_segmentor.h5')
+        expected_weights_hash = 'cbd72abc0dfda034b0a83d22c9a8c924'
+        self.target_file = os.path.join(segment_home, 'renal_segmentor_v2.h5')
         already_exists = os.path.isfile(self.target_file)
         if not already_exists:
             print('Downloading model weights')
-            wget.download('https://zenodo.org/record/4894406/files'
-                          '/whole_kidney_cnn.model?download=1',
+            wget.download('https://zenodo.org/record/17831252/files'
+                          '/whole_kidney_cnn_v2_2_0.h5?download=1',
                           self.target_file)
+            self._keras_compliance()
         self._check_hash(expected_weights_hash)
         self.path = self.target_file
         self.dir = segment_home
@@ -60,6 +62,17 @@ class Weights:
                           f'of the weights is available and therefore you '
                           f'should also update renal_segmentor or that there '
                           f'was an error when downloading the weights')
+            
+    def _keras_compliance(self):
+        f = h5py.File(self.target_file, 'r+')
+        model_config_str = f.attrs.get('model_config')
+        if model_config_str.find('"groups": 1, ') != -1:
+            model_config_str = model_config_str.replace('"groups": 1, ', '')
+            f.attrs.modify('model_config', model_config_str)
+            f.flush()
+            model_config_str = f.attrs.get("model_config")
+            assert model_config_str.find('"groups": 1, ') == -1
+        f.close()
 
     @staticmethod
     def _get_file_md5(filename):
