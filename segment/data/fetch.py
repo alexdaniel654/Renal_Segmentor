@@ -41,7 +41,7 @@ class Sub2:
 class Weights:
     def __init__(self):
         expected_weights_hash = 'cbd72abc0dfda034b0a83d22c9a8c924'
-        self.target_file = os.path.join(segment_home, 'renal_segmentor.h5')
+        self.target_file = os.path.join(segment_home, 'renal_segmentor_v2.h5')
         already_exists = os.path.isfile(self.target_file)
         if not already_exists:
             print('Downloading model weights')
