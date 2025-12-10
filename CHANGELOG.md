@@ -1,4 +1,10 @@
 # Changelog
+
+## [2.0.0] - 2025-12-10
+### Breaking Changes
+* The underlying CNN model has been updated to a new architecture which improves segmentation accuracy, particularly in cases of severe renal impairment. As a result, masks generated with this version will differ from those produced by previous versions.
+
+
 ## [1.3.12] - 2025-11-06
 ### Changed
 * Windows systems now install tensorflow-cpu rather than full tensorflow is modern versions of tensorflow don't support GPU on windows.
